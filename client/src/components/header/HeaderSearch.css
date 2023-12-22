@@ -1,0 +1,48 @@
+.header__search {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1024px;
+  border: 3px solid #febb02;
+  border-radius: 5px;
+  padding: 10px 0;
+  background-color: white;
+  color: lightgray;
+  height: 30px;
+  position: absolute;
+  transform: translateX(-50%);
+  bottom: -25px;
+  left: 50%;
+}
+
+.header__search-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.fa-calendar {
+  position: relative;
+}
+
+.header-search__date {
+  position: absolute;
+  transform: translate(-50%, 15%);
+  left: 50%;
+}
+
+.header__search-item input {
+  border: none;
+  outline: none;
+}
+
+.header__search-item span {
+  cursor: pointer;
+}
+
+.header-search__date {
+  position: absolute;
+  top: 0;
+}

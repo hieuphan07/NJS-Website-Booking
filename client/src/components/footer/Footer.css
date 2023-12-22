@@ -1,0 +1,27 @@
+.footer {
+  margin: 30px 0px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer__container {
+  width: 100%;
+  max-width: 1024px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+}
+
+.footer__column__value a {
+  font-size: 14px;
+  color: #003580;
+  text-decoration: none;
+}

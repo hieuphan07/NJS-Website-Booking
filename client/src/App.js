@@ -1,18 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/home/Home';
-import Detail from './pages/detail/Detail';
-import Search from './pages/search/Search';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './pages/Home';
+import Detail from './pages/Detail';
+import Search from './pages/Search';
+
+const router = createBrowserRouter([
+	{
+		path: '/',
+		children: [
+			{ index: true, element: <Home /> },
+			{ path: 'search', element: <Search /> },
+			{ path: 'detail', element: <Detail /> },
+		],
+	},
+]);
 
 function App() {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/search' element={<Search />} />
-				<Route path='/detail' element={<Detail />} />
-			</Routes>
-		</BrowserRouter>
-	);
+	return <RouterProvider router={router} />;
 }
 
 export default App;
