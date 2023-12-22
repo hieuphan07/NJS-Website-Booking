@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import NavBar from '../components/navbar/NavBar';
 import Header from '../components/header/Header';
 import Features from '../components/features/UI/Features';
@@ -9,15 +11,19 @@ import type from '../data/type.json';
 import hotel_list from '../data/hotel_list.json';
 
 const Home = () => {
-	// Go to Home page Handler
-	const homeHandler = () => window.location.replace('/');
-	// Go to Search page Handler
-	const searchHandler = () => window.location.replace('../search');
+	const navigate = useNavigate();
+
+	const goToHome = () => {
+		navigate('/');
+	};
+	const goToSearch = () => {
+		navigate('/search');
+	};
 
 	return (
 		<div>
-			<NavBar onHome={homeHandler} />
-			<Header onSearch={searchHandler} />
+			<NavBar onGoToHome={goToHome} />
+			<Header onGoToSearch={goToSearch} />
 			<Features cities={city} types={type} hotelLists={hotel_list} />
 			<Register />
 			<Footer />

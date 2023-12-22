@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import search from '../data/search.json';
 
@@ -11,18 +12,22 @@ import SearchList from '../components/features/searchList/SearchList';
 import './Search.css';
 
 const Search = () => {
-	// Go to Home page Handler
-	const homeHandler = () => window.location.replace('/');
-	// Go to Detail page Handler
-	const detailHandler = () => window.location.replace('/detail');
+	const navigate = useNavigate();
+
+	const goToHome = () => {
+		navigate('/');
+	};
+	const goToDetail = () => {
+		navigate('/detail');
+	};
 
 	return (
 		<div>
-			<NavBar onHome={homeHandler} />
+			<NavBar onGoToHome={goToHome} />
 			<div className='search-container'>
 				<div className='search-wrapper'>
 					<SearchPopup />
-					<SearchList results={search} onDetail={detailHandler} />
+					<SearchList results={search} onGoToDetail={goToDetail} />
 				</div>
 			</div>
 			<Register />
