@@ -3,7 +3,7 @@ import HeaderSearch from './HeaderSearch';
 
 import './Header.css';
 
-const Header = ({ onGoToSearch }) => {
+const Header = () => {
 	return (
 		<div className='header'>
 			<div className='header__container'>
@@ -14,7 +14,7 @@ const Header = ({ onGoToSearch }) => {
 				</p>
 				<button className='header__button'>Sign in / Register</button>
 			</div>
-			<HeaderSearch onGoToSearch={onGoToSearch} />
+			<HeaderSearch />
 		</div>
 	);
 };

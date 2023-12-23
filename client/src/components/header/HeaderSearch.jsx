@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
@@ -7,7 +8,12 @@ import { format } from 'date-fns';
 import './HeaderSearch.css';
 import './Header.css';
 
-const HeaderSearch = (props) => {
+const HeaderSearch = () => {
+	const navigate = useNavigate();
+	const goToSearch = () => {
+		navigate('/search');
+	};
+
 	const [date, setDate] = useState([
 		{
 			startDate: new Date(),
@@ -51,7 +57,7 @@ const HeaderSearch = (props) => {
 			</div>
 			<div className='header__search-item'>
 				{/* Click search button to go to Search page */}
-				<button onClick={props.onGoToSearch} className='header__search-button'>
+				<button onClick={goToSearch} className='header__search-button'>
 					Search
 				</button>
 			</div>
