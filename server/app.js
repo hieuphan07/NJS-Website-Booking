@@ -16,12 +16,12 @@ app.use(bodyParser.text());
 // import routes
 const hotelRoutes = require('./routes/hotel');
 
-// use routes
-app.use(hotelRoutes);
-
 app.get('/', (req, res, next) => {
 	res.send('Hello Node JS');
 });
+
+// use routes
+app.use('/hotels', hotelRoutes);
 
 mongoose
 	.connect(

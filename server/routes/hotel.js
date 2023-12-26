@@ -3,7 +3,11 @@ const router = express.Router();
 
 // import controller
 const hotelController = require('../controllers/hotel');
+const roomController = require('../controllers/room');
 
-router.get('/hotels', hotelController.getHotels);
+// routes
+router.get('/', hotelController.getHotels);
+
+router.get('/rooms', roomController.getRooms);
 
 module.exports = router;
