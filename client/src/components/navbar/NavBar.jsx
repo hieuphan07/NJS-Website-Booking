@@ -13,7 +13,9 @@ const NavBar = () => {
 					<Link to='/'>Booking Website</Link>
 				</span>
 				<div>
-					<button className='nav-bar__button'>Register</button>
+					<button className='nav-bar__button'>
+						<Link to='/signup'>Register</Link>
+					</button>
 					<button className='nav-bar__button'>
 						<Link to='/login'>Login</Link>
 					</button>
