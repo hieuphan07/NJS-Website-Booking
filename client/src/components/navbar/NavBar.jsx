@@ -8,7 +8,6 @@ const NavBar = () => {
 	return (
 		<div className='nav-bar'>
 			<div className='nav-bar__container'>
-				{/* Click "Booking Website" logo to go to Home page */}
 				<span className='nav-bar__logo'>
 					<Link to='/'>Booking Website</Link>
 				</span>

@@ -14,6 +14,11 @@
 	color: white;
 }
 
+.nav-bar__container a {
+	text-decoration: none;
+	color: #000;
+}
+
 .nav-bar__logo {
 	font-weight: bold;
 	cursor: pointer;

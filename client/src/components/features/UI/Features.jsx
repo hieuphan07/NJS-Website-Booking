@@ -13,9 +13,9 @@ const Features = (props) => {
 	return (
 		<div className='features'>
 			<div className='features__container'>
-				<City cities={props.cities} />
-				<Type types={props.types} />
-				<HotelList hotelLists={props.hotelLists} />
+				<City data={data} />
+				<Type data={data} />
+				<HotelList data={data} />
 			</div>
 		</div>
 	);
