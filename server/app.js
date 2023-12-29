@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 
 // import routes
+const userRoutes = require('./routes/user');
 const hotelRoutes = require('./routes/hotel');
 
 app.get('/', (req, res, next) => {
@@ -21,6 +22,7 @@ app.get('/', (req, res, next) => {
 });
 
 // use routes
+app.use(userRoutes);
 app.use('/hotels', hotelRoutes);
 
 mongoose
