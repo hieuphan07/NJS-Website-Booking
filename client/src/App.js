@@ -6,8 +6,7 @@ import Search from './pages/Search';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import { loader as hotelLoader } from '../src/components/features/UI/Features';
-import { action as signUpAction } from '../src/components/signup/SignupContent';
-import { action as loginAction } from '../src/components/login/LoginContent';
+import { action as authManipulateAction } from '../src/components/auth-action/auth-action';
 
 const router = createBrowserRouter([
 	{
@@ -15,8 +14,8 @@ const router = createBrowserRouter([
 		element: <RootLayout />,
 		children: [
 			{ index: true, element: <Home />, loader: hotelLoader },
-			{ path: 'login', element: <Login />, action: loginAction },
-			{ path: 'signup', element: <Signup />, action: signUpAction },
+			{ path: 'login', element: <Login />, action: authManipulateAction },
+			{ path: 'signup', element: <Signup />, action: authManipulateAction },
 			{ path: 'search', element: <Search /> },
 			{ path: 'detail', element: <Detail /> },
 		],

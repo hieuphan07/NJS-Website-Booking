@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, redirect, useActionData } from 'react-router-dom';
+import { Form, useActionData } from 'react-router-dom';
 
 import './SignupContent.css';
 
@@ -86,33 +86,3 @@ const SignupContent = () => {
 };
 
 export default SignupContent;
-
-export async function action({ request, params }) {
-	const data = await request.formData();
-	const user = {
-		fullName: data.get('firstName') + ' ' + data.get('lastName'),
-		email: data.get('email'),
-		phoneNumber: data.get('phoneNumber'),
-		username: data.get('username'),
-		password: data.get('password'),
-		isAdmin: false,
-	};
-	console.log(user);
-	const response = await fetch('http://localhost:5500/sign-up', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(user),
-	});
-	if (response.status === 422) {
-		return response;
-	}
-	if (!response.ok) {
-		console.log('Something went wrong!');
-	}
-	const resData = await response.json();
-	const token = resData.token;
-	localStorage.setItem('token', token);
-	return redirect('/login');
-}

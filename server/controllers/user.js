@@ -14,6 +14,7 @@ exports.createUser = async (req, res, next) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	const isAdmin = req.body.isAdmin;
+
 	const user = {
 		fullName: fullName,
 		email: email,
@@ -23,6 +24,7 @@ exports.createUser = async (req, res, next) => {
 		isAdmin: isAdmin,
 	};
 	let errors = {};
+
 	const existUsername = await isExistingText('username', user.username);
 	const existEmail = await isExistingText('email', user.email);
 	const existPhoneNumber = await isExistingPhone(
@@ -60,7 +62,6 @@ exports.createUser = async (req, res, next) => {
 			res
 				.status(201)
 				.json({ message: 'User created', user: newUser, token: authToken });
-			console.log('Created a new user successfully!');
 		}
 	} catch (err) {
 		console.log(err);
@@ -71,16 +72,14 @@ exports.login = async (req, res, next) => {
 	const email = req.body.email;
 	const password = req.body.password;
 	let errors = {};
-	let token;
+	let authToken;
 
-	console.log('Fetching from client');
 	const emailValid = isValidEmail(email);
 	if (emailValid) {
 		const [loggingUser] = await User.find({ email: email });
-		console.log(loggingUser);
 		if (loggingUser) {
 			if (password === loggingUser.password) {
-				token = createJSONToken(loggingUser.email);
+				authToken = createJSONToken(loggingUser.email);
 			} else {
 				errors.password = 'Wrong password! Try again.';
 			}
@@ -97,6 +96,6 @@ exports.login = async (req, res, next) => {
 			errors: errors,
 		});
 	} else {
-		return res.json({ token });
+		return res.json({ token: authToken });
 	}
 };
