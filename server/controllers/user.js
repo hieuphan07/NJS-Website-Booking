@@ -66,3 +66,37 @@ exports.createUser = async (req, res, next) => {
 		console.log(err);
 	}
 };
+
+exports.login = async (req, res, next) => {
+	const email = req.body.email;
+	const password = req.body.password;
+	let errors = {};
+	let token;
+
+	console.log('Fetching from client');
+	const emailValid = isValidEmail(email);
+	if (emailValid) {
+		const [loggingUser] = await User.find({ email: email });
+		console.log(loggingUser);
+		if (loggingUser) {
+			if (password === loggingUser.password) {
+				token = createJSONToken(loggingUser.email);
+			} else {
+				errors.password = 'Wrong password! Try again.';
+			}
+		} else {
+			errors.email = 'This email does not exists.';
+		}
+	} else {
+		errors.validEmail = 'Email is not valid.';
+	}
+
+	if (Object.values(errors).length > 0) {
+		return res.status(422).json({
+			message: 'Invalid credentials.',
+			errors: errors,
+		});
+	} else {
+		return res.json({ token });
+	}
+};
