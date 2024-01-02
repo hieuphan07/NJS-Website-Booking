@@ -24,7 +24,6 @@ export async function action({ request }) {
 					isAdmin: enteredIsAdmin,
 			  }
 			: { email: enteredEmail, password: enteredPassword };
-	console.log(enteredUser);
 
 	const response = await fetch('http://localhost:5500/' + mode, {
 		method: 'POST',
