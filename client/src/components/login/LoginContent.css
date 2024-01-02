@@ -31,3 +31,10 @@
 	color: white;
 	font-weight: 700;
 }
+
+.error-message {
+	color: red;
+}
+.error-message li {
+	list-style: none;
+}

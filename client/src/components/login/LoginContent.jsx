@@ -5,7 +5,6 @@ import './LoginContent.css';
 
 const LoginContent = () => {
 	const data = useActionData();
-	console.log(data);
 
 	return (
 		<div className='login-container'>
@@ -29,6 +28,13 @@ const LoginContent = () => {
 						required
 					/>
 				</label>
+				{data && data.errors && (
+					<div className='error-message'>
+						{Object.values(data.errors).map((error) => {
+							return <li key={error}>{error}</li>;
+						})}
+					</div>
+				)}
 				<button>Login</button>
 			</Form>
 		</div>
