@@ -5,7 +5,7 @@ const {
 	isValidEmail,
 	isValidLength,
 } = require('../util/validation');
-const { createJSONToken } = require('../util/auth');
+const { createJSONToken, verifyEmail } = require('../util/auth');
 
 exports.createUser = async (req, res, next) => {
 	const fullName = req.body.fullName;
@@ -97,5 +97,13 @@ exports.login = async (req, res, next) => {
 		});
 	} else {
 		return res.json({ token: authToken });
+	}
+};
+
+exports.getUser = (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	if (token) {
+		const email = verifyEmail(token);
+		return res.json(email);
 	}
 };

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 
 import NavBar from '../components/navbar/NavBar';
 
 const RootLayout = () => {
+	const token = useLoaderData();
 	return (
 		<div>
-			<NavBar />
+			<NavBar token={token} />
 			<main>
 				<Outlet />
 			</main>
@@ -15,3 +16,13 @@ const RootLayout = () => {
 };
 
 export default RootLayout;
+
+export function loader() {
+	const token = localStorage.getItem('token');
+
+	if (!token) {
+		return null;
+	}
+
+	return token;
+}
