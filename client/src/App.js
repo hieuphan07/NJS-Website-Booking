@@ -5,6 +5,7 @@ import Detail from './pages/Detail';
 import Search from './pages/Search';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Transaction from './pages/Transaction';
 import { loader as hotelLoader } from '../src/components/features/UI/Features';
 import { action as authManipulateAction } from '../src/components/auth-action/auth-action';
 
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
 			{ path: 'signup', element: <Signup />, action: authManipulateAction },
 			{ path: 'search', element: <Search /> },
 			{ path: 'detail', element: <Detail /> },
+			{ path: 'transaction', element: <Transaction /> },
 		],
 	},
 ]);

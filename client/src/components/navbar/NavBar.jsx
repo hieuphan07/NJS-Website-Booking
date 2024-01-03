@@ -52,7 +52,7 @@ const NavBar = ({ token }) => {
 					<div>
 						<span>{loginEmail}</span>
 						<button className='nav-bar__button'>
-							<Link>Transactions</Link>
+							<Link to='/transaction'>Transactions</Link>
 						</button>
 						<button className='nav-bar__button' onClick={logoutHandler}>
 							<Link>Logout</Link>
