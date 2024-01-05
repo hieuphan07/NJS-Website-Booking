@@ -8,6 +8,10 @@ const roomController = require('../controllers/room');
 // routes
 router.get('/', hotelController.getHotels);
 
+router.get('/countByCity', hotelController.countByCity);
+
+router.get('/countByType', hotelController.countByType);
+
 router.get('/rooms', roomController.getRooms);
 
 module.exports = router;

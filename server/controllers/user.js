@@ -81,10 +81,10 @@ exports.login = async (req, res, next) => {
 			if (password === loggingUser.password) {
 				authToken = createJSONToken(loggingUser.email);
 			} else {
-				errors.password = 'Wrong password! Try again.';
+				errors.password = 'Password is incorrect. Try again.';
 			}
 		} else {
-			errors.email = 'This email does not exists.';
+			errors.email = 'User not found.';
 		}
 	} else {
 		errors.validEmail = 'Email is not valid.';
