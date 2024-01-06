@@ -23,7 +23,6 @@ const SearchList = (props) => {
 						/>
 						{/* Hotel detail container */}
 						<div className='search-list__detail'>
-							{/* Click title to go to Detail Page */}
 							<h4 className='search-list__name' onClick={props.onGoToDetail}>
 								{curr.name}
 							</h4>
@@ -33,7 +32,6 @@ const SearchList = (props) => {
 							<span className='search-list__tag'>{curr.tag}</span>
 							<p className='search-list__type'>{curr.description}</p>
 							<p className='search-list__description'>{curr.type}</p>
-							{/* Render free cancel belongs to value of "free_cancel" varaible */}
 							{curr.free_cancel && freeCancel}
 						</div>
 						{/* Hotel information container */}
@@ -47,7 +45,6 @@ const SearchList = (props) => {
 								<p className='search-list__price-info'>
 									Includes taxex and fees
 								</p>
-								{/* Click button to go to Detail page */}
 								<button
 									className='search-list__button'
 									onClick={props.onGoToDetail}
