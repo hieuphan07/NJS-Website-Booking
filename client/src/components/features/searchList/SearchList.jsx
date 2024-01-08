@@ -1,8 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './SearchList.css';
 
 const SearchList = (props) => {
+	const navigate = useNavigate();
+
+	const goToDetail = () => {
+		navigate('/detail');
+	};
 	const freeCancel = (
 		<p className='search-list__free-cancel'>
 			Free cancellation
@@ -23,7 +29,7 @@ const SearchList = (props) => {
 						/>
 						{/* Hotel detail container */}
 						<div className='search-list__detail'>
-							<h4 className='search-list__name' onClick={props.onGoToDetail}>
+							<h4 className='search-list__name' onClick={goToDetail}>
 								{curr.name}
 							</h4>
 							<p className='search-list__distance'>
@@ -45,10 +51,7 @@ const SearchList = (props) => {
 								<p className='search-list__price-info'>
 									Includes taxex and fees
 								</p>
-								<button
-									className='search-list__button'
-									onClick={props.onGoToDetail}
-								>
+								<button className='search-list__button' onClick={goToDetail}>
 									See availability
 								</button>
 							</div>
