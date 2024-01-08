@@ -1,9 +1,12 @@
 import React from 'react';
+import { useRouteLoaderData } from 'react-router-dom';
 
 import './HotelList.css';
 
-const HotelList = ({ data }) => {
-	const highRatedHotels = data
+const HotelList = () => {
+	const { fetchedHotels } = useRouteLoaderData('root');
+
+	const highRatedHotels = fetchedHotels
 		.sort((a, b) => {
 			return b.rating - a.rating;
 		})

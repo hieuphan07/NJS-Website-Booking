@@ -1,8 +1,15 @@
 import React from 'react';
+import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
 import './SearchList.css';
 
 const SearchList = (props) => {
+	const { fetchedHotels } = useRouteLoaderData('root');
+	const navigate = useNavigate();
+
+	const goToDetail = () => {
+		navigate('/detail');
+	};
 	const freeCancel = (
 		<p className='search-list__free-cancel'>
 			Free cancellation
@@ -14,41 +21,40 @@ const SearchList = (props) => {
 		<div className='search-list'>
 			<div className='search-list__container'>
 				{/* Render search result from given data */}
-				{props.results.map((curr, index) => (
-					<div className='search-list__wrapper' key={index}>
+				{fetchedHotels.map((curr, index) => (
+					<div className='search-list__wrapper' key={curr._id}>
 						<img
-							src={curr.image_url}
+							src={curr.photos[0]}
 							alt='hotel'
 							className='search-list__img'
 						/>
 						{/* Hotel detail container */}
 						<div className='search-list__detail'>
-							<h4 className='search-list__name' onClick={props.onGoToDetail}>
-								{curr.name}
+							<h4 className='search-list__name' onClick={goToDetail}>
+								{curr.title}
 							</h4>
 							<p className='search-list__distance'>
 								{curr.distance} from center
 							</p>
 							<span className='search-list__tag'>{curr.tag}</span>
-							<p className='search-list__type'>{curr.description}</p>
+							<p className='search-list__type'>
+								{curr.desc.slice(0, 100) + '...'}
+							</p>
 							<p className='search-list__description'>{curr.type}</p>
-							{curr.free_cancel && freeCancel}
+							{true && freeCancel}
 						</div>
 						{/* Hotel information container */}
 						<div className='search-list__info'>
 							<div className='search-list__review'>
-								<span className='search-list__rate-text'>{curr.rate_text}</span>
-								<span className='search-list__rate'>{curr.rate}</span>
+								<span className='search-list__rate-text'>Excellent</span>
+								<span className='search-list__rate'>{curr.rating}</span>
 							</div>
 							<div className='search-list__price-wrapper'>
-								<p className='search-list__price'>${curr.price}</p>
+								<p className='search-list__price'>${curr.cheapestPrice}</p>
 								<p className='search-list__price-info'>
 									Includes taxex and fees
 								</p>
-								<button
-									className='search-list__button'
-									onClick={props.onGoToDetail}
-								>
+								<button className='search-list__button' onClick={goToDetail}>
 									See availability
 								</button>
 							</div>
