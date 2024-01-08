@@ -24,9 +24,13 @@ const Features = () => {
 export default Features;
 
 export async function loader() {
-	const response = await fetch('http://localhost:5500/hotels');
-	if (!response.ok) {
-		console.log('Something went wrong!');
+	try {
+		const response = await fetch('http://localhost:5500/hotels');
+		if (!response.ok) {
+			throw new Error(`${response.status} ${response.statusText}`);
+		}
+		return response;
+	} catch (err) {
+		throw new Error(err);
 	}
-	return response;
 }
