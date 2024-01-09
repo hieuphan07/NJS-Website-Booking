@@ -16,6 +16,7 @@ app.use(bodyParser.text());
 // import routes
 const userRoutes = require('./routes/user');
 const hotelRoutes = require('./routes/hotel');
+const roomRoutes = require('./routes/room');
 
 app.get('/', (req, res, next) => {
 	res.send('Hello Node JS');
@@ -24,6 +25,7 @@ app.get('/', (req, res, next) => {
 // use routes
 app.use(userRoutes);
 app.use('/hotels', hotelRoutes);
+app.use('/rooms', roomRoutes);
 
 mongoose
 	.connect(

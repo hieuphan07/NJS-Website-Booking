@@ -2,6 +2,8 @@ const Hotel = require('../models/hotel');
 
 exports.getHotels = (req, res, next) => {
 	Hotel.find()
+		.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
+		.exec()
 		.then((hotels) => {
 			res.json(hotels);
 		})

@@ -13,7 +13,16 @@ const initialState = {
 export const searchSlice = createSlice({
 	name: 'search',
 	initialState,
-	reducers: {},
+	reducers: {
+		new_search: (state, action) => {
+			return action.payload;
+		},
+		reset_search: (state, action) => {
+			return initialState;
+		},
+	},
 });
 
 export default searchSlice.reducer;
+
+export const { new_search } = searchSlice.actions;
