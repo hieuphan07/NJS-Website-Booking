@@ -5,7 +5,6 @@ import './SearchList.css';
 
 const SearchList = () => {
 	const { fetchedHotels } = useRouteLoaderData('root');
-	console.log(fetchedHotels);
 
 	const navigate = useNavigate();
 	const goToDetail = () => {

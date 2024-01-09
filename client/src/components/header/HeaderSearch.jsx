@@ -11,7 +11,7 @@ import './Header.css';
 const HeaderSearch = () => {
 	const navigate = useNavigate();
 	const goToSearch = () => {
-		navigate('/search');
+		navigate('/search', { state: { destination, date, optionState } });
 	};
 
 	const [date, setDate] = useState([
@@ -21,9 +21,10 @@ const HeaderSearch = () => {
 			key: 'selection',
 		},
 	]);
+	const [destination, setDestination] = useState('');
 
 	// Reducer hanlde quantity of people and room
-	const initialState = {
+	const initialOptionState = {
 		adult: 2,
 		children: 0,
 		room: 1,
@@ -49,7 +50,10 @@ const HeaderSearch = () => {
 				return state;
 		}
 	};
-	const [state, dispatch] = useReducer(quantityReducer, initialState);
+	const [optionState, dispatch] = useReducer(
+		quantityReducer,
+		initialOptionState
+	);
 	const adultIncrementHandler = () => {
 		dispatch({ type: 'adultIncrement' });
 	};
@@ -86,7 +90,13 @@ const HeaderSearch = () => {
 		<div className='header__search'>
 			<div className='header__search-item'>
 				<i className='fa fa-bed'></i>
-				<input type='text' placeholder='Where are you going?' />
+				<input
+					type='text'
+					name='location'
+					placeholder='Where are you going?'
+					value={destination}
+					onChange={(e) => setDestination(e.target.value)}
+				/>
 			</div>
 
 			<div className='header__search-item'>
@@ -112,9 +122,10 @@ const HeaderSearch = () => {
 			<div className='header__search-item'>
 				<i className='fa fa-female'></i>
 				<span onClick={setQuantityIsOpenHandler}>
-					{state.adult} adult &middot; {state.children} children &middot;{' '}
-					{state.room} room
+					{optionState.adult} adult &middot; {optionState.children} children
+					&middot; {optionState.room} room
 				</span>
+
 				{/* Adjust quantity */}
 				{quantityIsOpen && (
 					<div className='quantity-container'>
@@ -122,7 +133,7 @@ const HeaderSearch = () => {
 							<span>Adult</span>
 							<div className='quantity__action'>
 								<button onClick={adultDecrementHandler}>-</button>
-								<span>{state.adult}</span>
+								<span>{optionState.adult}</span>
 								<button onClick={adultIncrementHandler}>+</button>
 							</div>
 						</div>
@@ -130,7 +141,7 @@ const HeaderSearch = () => {
 							<span>Children</span>
 							<div className='quantity__action'>
 								<button onClick={childrenDecrementHandler}>-</button>
-								<span>{state.children}</span>
+								<span>{optionState.children}</span>
 								<button onClick={childrenIncrementHandler}>+</button>
 							</div>
 						</div>
@@ -138,7 +149,7 @@ const HeaderSearch = () => {
 							<span>Room</span>
 							<div className='quantity__action'>
 								<button onClick={roomDecrementHandler}>-</button>
-								<span>{state.room}</span>
+								<span>{optionState.room}</span>
 								<button onClick={roomIncrementHandler}>+</button>
 							</div>
 						</div>

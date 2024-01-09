@@ -6,11 +6,11 @@ import { format } from 'date-fns';
 
 import './SearchPopup.css';
 
-const SearchPopup = () => {
+const SearchPopup = ({ destination, selectedDate, option }) => {
 	const [date, setDate] = useState([
 		{
-			startDate: new Date(),
-			endDate: new Date(),
+			startDate: selectedDate ? selectedDate[0].startDate : new Date(),
+			endDate: selectedDate ? selectedDate[0].endDate : new Date(),
 			key: 'selection',
 		},
 	]);
@@ -32,7 +32,12 @@ const SearchPopup = () => {
 							Destination
 						</label>
 						<br />
-						<input type='text' id='destination' />
+						<input
+							type='text'
+							id='destination'
+							name='destination'
+							placeholder={destination}
+						/>
 						<br />
 					</div>
 					{/* Check-in Date */}
@@ -44,7 +49,10 @@ const SearchPopup = () => {
 						<input
 							type='text'
 							id='check-in'
-							placeholder='05/27/2023 - 05/30/2023'
+							placeholder={`${format(
+								selectedDate[0].startDate,
+								'MM/dd/yyy'
+							)} - ${format(selectedDate[0].endDate, 'MM/dd/yyy')}`}
 							value={`${startDate} - ${endDate}`}
 							onClick={setIsOpenHandler}
 							readOnly
@@ -80,7 +88,7 @@ const SearchPopup = () => {
 								<span className='search-popup__key'>Adult</span>
 								<input
 									type='number'
-									placeholder='1'
+									placeholder={option.adult}
 									className='search-popup__input'
 								/>
 							</div>
@@ -89,7 +97,7 @@ const SearchPopup = () => {
 								<span className='search-popup__key'>Children</span>
 								<input
 									type='number'
-									placeholder='0'
+									placeholder={option.children}
 									className='search-popup__input'
 								/>
 							</div>
@@ -98,7 +106,7 @@ const SearchPopup = () => {
 								<span className='search-popup__key'>Room</span>
 								<input
 									type='number'
-									placeholder='1'
+									placeholder={option.room}
 									className='search-popup__input'
 								/>
 							</div>
