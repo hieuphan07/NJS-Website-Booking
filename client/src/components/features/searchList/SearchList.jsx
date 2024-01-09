@@ -3,13 +3,15 @@ import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
 import './SearchList.css';
 
-const SearchList = (props) => {
+const SearchList = () => {
 	const { fetchedHotels } = useRouteLoaderData('root');
-	const navigate = useNavigate();
+	console.log(fetchedHotels);
 
+	const navigate = useNavigate();
 	const goToDetail = () => {
 		navigate('/detail');
 	};
+
 	const freeCancel = (
 		<p className='search-list__free-cancel'>
 			Free cancellation
@@ -34,13 +36,11 @@ const SearchList = (props) => {
 								{curr.title}
 							</h4>
 							<p className='search-list__distance'>
-								{curr.distance} from center
+								{curr.distance}m from center
 							</p>
-							<span className='search-list__tag'>{curr.tag}</span>
-							<p className='search-list__type'>
-								{curr.desc.slice(0, 100) + '...'}
-							</p>
-							<p className='search-list__description'>{curr.type}</p>
+							<span className='search-list__tag'>Free airport taxi</span>
+							<p className='search-list__title'>{curr.title}</p>
+							<p className='search-list__description'>{curr.desc}</p>
 							{true && freeCancel}
 						</div>
 						{/* Hotel information container */}
