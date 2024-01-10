@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 import './SearchPopup.css';
 
-const SearchPopup = ({ destination, selectedDate, option }) => {
+const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 	const [date, setDate] = useState([
 		{
 			startDate: selectedDate ? selectedDate[0].startDate : new Date(),
@@ -40,6 +40,7 @@ const SearchPopup = ({ destination, selectedDate, option }) => {
 						/>
 						<br />
 					</div>
+
 					{/* Check-in Date */}
 					<div className='check-in-wrapper'>
 						<label htmlFor='check-in' className='search-popup__label'>
@@ -69,6 +70,7 @@ const SearchPopup = ({ destination, selectedDate, option }) => {
 							/>
 						)}
 					</div>
+
 					{/* Options */}
 					<div className='search-popup__options'>
 						<p className='search-popup__label'>Options</p>
@@ -88,6 +90,7 @@ const SearchPopup = ({ destination, selectedDate, option }) => {
 								<span className='search-popup__key'>Adult</span>
 								<input
 									type='number'
+									min='1'
 									placeholder={option.adult}
 									className='search-popup__input'
 								/>
@@ -97,6 +100,7 @@ const SearchPopup = ({ destination, selectedDate, option }) => {
 								<span className='search-popup__key'>Children</span>
 								<input
 									type='number'
+									min='0'
 									placeholder={option.children}
 									className='search-popup__input'
 								/>
@@ -106,13 +110,20 @@ const SearchPopup = ({ destination, selectedDate, option }) => {
 								<span className='search-popup__key'>Room</span>
 								<input
 									type='number'
+									min='1'
 									placeholder={option.room}
 									className='search-popup__input'
 								/>
 							</div>
 						</div>
 					</div>
-					<button className='search-popup__button'>Search</button>
+					<button
+						className='search-popup__button'
+						type='button'
+						onClick={searchHandler}
+					>
+						Search
+					</button>
 				</form>
 			</div>
 		</div>

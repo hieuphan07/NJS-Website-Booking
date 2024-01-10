@@ -45,3 +45,10 @@ exports.countByType = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.searchHotels = (req, res, next) => {
+	console.log(req.query);
+	Hotel.find({ city: req.query.city })
+		.then((hotels) => res.json(hotels))
+		.catch((err) => console.log(err));
+};

@@ -7,20 +7,33 @@ import SearchPopup from '../components/features/searchPopup/SearchPopup';
 import SearchList from '../components/features/searchList/SearchList';
 
 import './Search.css';
+import useFetch from '../hooks/useFetch';
 
 const Search = () => {
 	const location = useLocation();
+	const destination = location.state.city;
+	const selectedDate = location.state.dates;
+	const option = location.state.options;
+
+	const {
+		fetchedData: searchingHotels,
+		error,
+		reFetch: reSearch,
+	} = useFetch(
+		`http://localhost:5500/hotels/search?city=${destination}&date=${selectedDate}&option=${option}`
+	);
 
 	return (
 		<div>
 			<div className='search-container'>
 				<div className='search-wrapper'>
 					<SearchPopup
-						destination={location.state.destination}
-						selectedDate={location.state.date}
-						option={location.state.optionState}
+						destination={destination}
+						selectedDate={selectedDate}
+						option={option}
+						searchHandler={reSearch}
 					/>
-					<SearchList />
+					<SearchList searchingHotels={searchingHotels} />
 				</div>
 			</div>
 			<Register />

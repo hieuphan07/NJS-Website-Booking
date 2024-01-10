@@ -18,10 +18,10 @@ const router = createBrowserRouter([
 		loader: coupleLoader,
 		children: [
 			{ index: true, element: <Home /> },
-			{ path: 'login', element: <Login />, action: authManipulateAction },
-			{ path: 'signup', element: <Signup />, action: authManipulateAction },
 			{ path: 'search', element: <Search /> },
 			{ path: 'detail', element: <Detail /> },
+			{ path: 'login', element: <Login />, action: authManipulateAction },
+			{ path: 'signup', element: <Signup />, action: authManipulateAction },
 			{ path: 'transaction', element: <Transaction /> },
 		],
 	},

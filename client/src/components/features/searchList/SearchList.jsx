@@ -1,11 +1,9 @@
 import React from 'react';
-import { useNavigate, useRouteLoaderData } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import './SearchList.css';
 
-const SearchList = () => {
-	const { fetchedHotels } = useRouteLoaderData('root');
-
+const SearchList = ({ searchingHotels }) => {
 	const navigate = useNavigate();
 	const goToDetail = () => {
 		navigate('/detail');
@@ -22,7 +20,7 @@ const SearchList = () => {
 		<div className='search-list'>
 			<div className='search-list__container'>
 				{/* Render search result from given data */}
-				{fetchedHotels.map((curr, index) => (
+				{searchingHotels.map((curr, index) => (
 					<div className='search-list__wrapper' key={curr._id}>
 						<img
 							src={curr.photos[0]}
