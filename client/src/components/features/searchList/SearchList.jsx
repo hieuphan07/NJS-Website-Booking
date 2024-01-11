@@ -19,7 +19,8 @@ const SearchList = ({ searchingHotels, error }) => {
 	return (
 		<div className='search-list'>
 			{error && <h1>{error.message}</h1>}
-			{!error && (
+			{!error && searchingHotels.length === 0 && <h1>No results found!</h1>}
+			{!error && searchingHotels.length > 0 && (
 				<div className='search-list__container'>
 					{/* Render search result from given data */}
 					{searchingHotels.map((curr, index) => (
