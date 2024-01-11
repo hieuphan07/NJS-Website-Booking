@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import useFetch from '../hooks/useFetch';
 
 import Register from '../components/features/register/Register';
 import Footer from '../components/footer/Footer';
@@ -7,20 +8,16 @@ import SearchPopup from '../components/features/searchPopup/SearchPopup';
 import SearchList from '../components/features/searchList/SearchList';
 
 import './Search.css';
-import useFetch from '../hooks/useFetch';
 
 const Search = () => {
 	const location = useLocation();
-	const destination = location.state.city;
-	const selectedDate = location.state.dates;
-	const option = location.state.options;
 
-	const {
-		fetchedData: searchingHotels,
-		error,
-		reFetch: reSearch,
-	} = useFetch(
-		`http://localhost:5500/hotels/search?city=${destination}&date=${selectedDate}&option=${option}`
+	const enteredCity = location.state.city;
+	const enteredDates = location.state.dates;
+	const enteredOptions = location.state.options;
+
+	const { fetchedData: searchingHotels, error } = useFetch(
+		`http://localhost:5500/hotels/search?city=${enteredCity}&date=${enteredDates}&option=${enteredOptions}`
 	);
 
 	return (
@@ -28,12 +25,11 @@ const Search = () => {
 			<div className='search-container'>
 				<div className='search-wrapper'>
 					<SearchPopup
-						destination={destination}
-						selectedDate={selectedDate}
-						option={option}
-						searchHandler={reSearch}
+						enteredCity={enteredCity}
+						enteredDates={enteredDates}
+						enteredOptions={enteredOptions}
 					/>
-					<SearchList searchingHotels={searchingHotels} />
+					<SearchList searchingHotels={searchingHotels} error={error} />
 				</div>
 			</div>
 			<Register />

@@ -1,4 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+	selectCity,
+	selectDates,
+	selectOptions,
+} from '../../../redux-store/features/search/searchSlice';
+import {
+	setDestination,
+	setDates,
+	setAdultByAmount,
+	setChildrenByAmount,
+	setRoomByAmount,
+} from '../../../redux-store/features/search/searchSlice';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
@@ -6,11 +20,18 @@ import { format } from 'date-fns';
 
 import './SearchPopup.css';
 
-const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
+const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
+	const navigate = useNavigate();
+
+	const dispatch = useDispatch();
+	const city = useSelector(selectCity);
+	const dates = useSelector(selectDates);
+	const options = useSelector(selectOptions);
+
 	const [date, setDate] = useState([
 		{
-			startDate: selectedDate ? selectedDate[0].startDate : new Date(),
-			endDate: selectedDate ? selectedDate[0].endDate : new Date(),
+			startDate: enteredDates ? enteredDates[0].startDate : new Date(),
+			endDate: enteredDates ? enteredDates[0].endDate : new Date(),
 			key: 'selection',
 		},
 	]);
@@ -20,6 +41,12 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 	// useState for Opening/Hiding the date range picker
 	const [isOpen, setIsOpen] = useState(false);
 	const setIsOpenHandler = () => setIsOpen(!isOpen);
+
+	const searchHandler = () => {
+		navigate('/search', {
+			state: { city, dates, options },
+		});
+	};
 
 	return (
 		<div className='search-popup'>
@@ -36,7 +63,9 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 							type='text'
 							id='destination'
 							name='destination'
-							placeholder={destination}
+							placeholder={enteredCity}
+							value={city}
+							onChange={(e) => dispatch(setDestination(e.target.value))}
 						/>
 						<br />
 					</div>
@@ -51,9 +80,9 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 							type='text'
 							id='check-in'
 							placeholder={`${format(
-								selectedDate[0].startDate,
+								enteredDates[0].startDate,
 								'MM/dd/yyy'
-							)} - ${format(selectedDate[0].endDate, 'MM/dd/yyy')}`}
+							)} - ${format(enteredDates[0].endDate, 'MM/dd/yyy')}`}
 							value={`${startDate} - ${endDate}`}
 							onClick={setIsOpenHandler}
 							readOnly
@@ -63,9 +92,20 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 								className='search-popup__date'
 								editableDateInputs={true}
 								moveRangeOnFirstSelection={false}
-								ranges={date}
+								ranges={date.map(({ startDate, endDate, key }) => ({
+									startDate: new Date(startDate),
+									endDate: new Date(endDate),
+									key,
+								}))}
+								minDate={new Date()}
 								onChange={(item) => {
-									setDate([item.selection]);
+									const newDate = {
+										...item.selection,
+										startDate: item.selection.startDate.getTime(),
+										endDate: item.selection.endDate.getTime(),
+									};
+									setDate([newDate]);
+									dispatch(setDates([newDate]));
 								}}
 							/>
 						)}
@@ -91,8 +131,10 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 								<input
 									type='number'
 									min='1'
-									placeholder={option.adult}
+									placeholder={enteredOptions.adult}
 									className='search-popup__input'
+									value={options.adult}
+									onChange={(e) => dispatch(setAdultByAmount(e.target.value))}
 								/>
 							</div>
 							{/* Number of children */}
@@ -101,8 +143,12 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 								<input
 									type='number'
 									min='0'
-									placeholder={option.children}
+									placeholder={enteredOptions.children}
 									className='search-popup__input'
+									value={options.children}
+									onChange={(e) =>
+										dispatch(setChildrenByAmount(e.target.value))
+									}
 								/>
 							</div>
 							{/* Number of room */}
@@ -111,8 +157,10 @@ const SearchPopup = ({ destination, selectedDate, option, searchHandler }) => {
 								<input
 									type='number'
 									min='1'
-									placeholder={option.room}
+									placeholder={enteredOptions.room}
 									className='search-popup__input'
+									value={options.room}
+									onChange={(e) => dispatch(setRoomByAmount(e.target.value))}
 								/>
 							</div>
 						</div>
