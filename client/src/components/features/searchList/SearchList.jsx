@@ -5,8 +5,8 @@ import './SearchList.css';
 
 const SearchList = ({ searchingHotels, error }) => {
 	const navigate = useNavigate();
-	const goToDetail = () => {
-		navigate('/detail');
+	const goToDetail = (hotelId) => {
+		navigate(`/detail/${hotelId}`);
 	};
 
 	const freeCancel = (
@@ -54,7 +54,10 @@ const SearchList = ({ searchingHotels, error }) => {
 									<p className='search-list__price-info'>
 										Includes taxex and fees
 									</p>
-									<button className='search-list__button' onClick={goToDetail}>
+									<button
+										className='search-list__button'
+										onClick={() => goToDetail(curr._id)}
+									>
 										See availability
 									</button>
 								</div>

@@ -35,8 +35,8 @@ const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
 			key: 'selection',
 		},
 	]);
-	const startDate = format(date[0].startDate, 'MM/dd/yyyy');
-	const endDate = format(date[0].endDate, 'MM/dd/yyyy');
+	const startDate = format(dates[0].startDate, 'MM/dd/yyyy');
+	const endDate = format(dates[0].endDate, 'MM/dd/yyyy');
 
 	// useState for Opening/Hiding the date range picker
 	const [isOpen, setIsOpen] = useState(false);

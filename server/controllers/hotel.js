@@ -12,6 +12,24 @@ exports.getHotels = (req, res, next) => {
 		});
 };
 
+exports.getHotelById = async (req, res, next) => {
+	const hotelId = req.params.id;
+	Hotel.findById(hotelId)
+		.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
+		.exec()
+		.then((hotel) => {
+			res.json(hotel);
+		})
+		.catch((err) => console.log(err));
+};
+
+exports.searchHotels = (req, res, next) => {
+	console.log(req.query);
+	Hotel.find({ city: req.query.city })
+		.then((hotels) => res.json(hotels))
+		.catch((err) => console.log(err));
+};
+
 exports.countByCity = async (req, res, next) => {
 	const cities = req.query.cities.split(',');
 	try {
@@ -44,11 +62,4 @@ exports.countByType = async (req, res, next) => {
 	} catch (err) {
 		next(err);
 	}
-};
-
-exports.searchHotels = (req, res, next) => {
-	console.log(req.query);
-	Hotel.find({ city: req.query.city })
-		.then((hotels) => res.json(hotels))
-		.catch((err) => console.log(err));
 };
