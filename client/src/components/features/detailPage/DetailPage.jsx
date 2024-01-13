@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
+import Reserve from '../../reserve/Reserve';
 
 import './DetailPage.css';
 
@@ -10,6 +11,10 @@ const DetailPage = () => {
 	const { fetchedData: detailHotel, error } = useFetch(
 		`http://localhost:5500/hotels/find/${hotelId}`
 	);
+	const [isReserveOpen, setIsReserveOpen] = useState(false);
+	const reverseOpenHandler = () => {
+		setIsReserveOpen((prev) => !prev);
+	};
 
 	return (
 		<div className='detail-page'>
@@ -62,13 +67,17 @@ const DetailPage = () => {
 							<span className='detail-page__highlight-price'>
 								<strong>${detailHotel.cheapestPrice}</strong> (1 nights)
 							</span>
-							<button className='detail-page__highlight-button'>
+							<button
+								className='detail-page__highlight-button'
+								onClick={reverseOpenHandler}
+							>
 								Reserve or Book Now!
 							</button>
 						</div>
 					</div>
 				</div>
 			)}
+			{isReserveOpen && <Reserve />}
 		</div>
 	);
 };
