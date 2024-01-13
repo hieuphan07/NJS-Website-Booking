@@ -3,7 +3,7 @@ import { DateRange } from 'react-date-range';
 
 import './Reserve.css';
 
-const Reserve = () => {
+const Reserve = React.forwardRef((props, ref) => {
 	const [state, setState] = useState([
 		{
 			startDate: new Date(),
@@ -13,7 +13,7 @@ const Reserve = () => {
 	]);
 
 	return (
-		<div className='reserve-container'>
+		<div className='reserve-container' ref={ref}>
 			<div className='date-picker'>
 				<h2>Dates</h2>
 				<DateRange
@@ -170,6 +170,6 @@ const Reserve = () => {
 			</div>
 		</div>
 	);
-};
+});
 
 export default Reserve;

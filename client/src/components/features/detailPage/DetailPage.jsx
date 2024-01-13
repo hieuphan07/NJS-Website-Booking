@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
 import Reserve from '../../reserve/Reserve';
@@ -11,9 +11,18 @@ const DetailPage = () => {
 	const { fetchedData: detailHotel, error } = useFetch(
 		`http://localhost:5500/hotels/find/${hotelId}`
 	);
+
+	const reserveRef = useRef();
 	const [isReserveOpen, setIsReserveOpen] = useState(false);
 	const reverseOpenHandler = () => {
 		setIsReserveOpen((prev) => !prev);
+	};
+
+	const scrollToForm = () => {
+		window.scrollTo({
+			top: reserveRef.current.offsetTop,
+			behavior: 'smooth',
+		});
 	};
 
 	return (
@@ -69,7 +78,12 @@ const DetailPage = () => {
 							</span>
 							<button
 								className='detail-page__highlight-button'
-								onClick={reverseOpenHandler}
+								onClick={() => {
+									reverseOpenHandler();
+									setTimeout(() => {
+										scrollToForm();
+									}, 500);
+								}}
 							>
 								Reserve or Book Now!
 							</button>
@@ -77,7 +91,7 @@ const DetailPage = () => {
 					</div>
 				</div>
 			)}
-			{isReserveOpen && <Reserve />}
+			{isReserveOpen && <Reserve ref={reserveRef} />}
 		</div>
 	);
 };
