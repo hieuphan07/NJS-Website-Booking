@@ -15,13 +15,17 @@ const DetailPage = () => {
 	const reserveRef = useRef();
 	const [isReserveOpen, setIsReserveOpen] = useState(false);
 	const reverseOpenHandler = () => {
-		setIsReserveOpen((prev) => !prev);
-	};
-
-	const scrollToForm = () => {
-		window.scrollTo({
-			top: reserveRef.current.offsetTop,
-			behavior: 'smooth',
+		setIsReserveOpen((prev) => {
+			prev = !prev;
+			if (prev === true) {
+				setTimeout(() => {
+					window.scrollTo({
+						top: reserveRef.current.offsetTop,
+						behavior: 'smooth',
+					});
+				}, 300);
+			}
+			return prev;
 		});
 	};
 
@@ -46,7 +50,10 @@ const DetailPage = () => {
 								and get a free airport taxi
 							</span>
 						</div>
-						<button className='detail-page__button'>
+						<button
+							className='detail-page__button'
+							onClick={reverseOpenHandler}
+						>
 							Reserve or Book Now!
 						</button>
 					</div>
@@ -78,12 +85,7 @@ const DetailPage = () => {
 							</span>
 							<button
 								className='detail-page__highlight-button'
-								onClick={() => {
-									reverseOpenHandler();
-									setTimeout(() => {
-										scrollToForm();
-									}, 500);
-								}}
+								onClick={reverseOpenHandler}
 							>
 								Reserve or Book Now!
 							</button>
@@ -91,7 +93,7 @@ const DetailPage = () => {
 					</div>
 				</div>
 			)}
-			{isReserveOpen && <Reserve ref={reserveRef} />}
+			{isReserveOpen && <Reserve ref={reserveRef} rooms={detailHotel.rooms} />}
 		</div>
 	);
 };
