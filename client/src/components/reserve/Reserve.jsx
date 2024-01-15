@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectDates } from '../../redux-store/features/search/searchSlice';
 import { DateRange } from 'react-date-range';
 
 import './Reserve.css';
 
 const Reserve = React.forwardRef(({ rooms }, ref) => {
+	const dates = useSelector(selectDates);
 	const [state, setState] = useState([
 		{
-			startDate: new Date(),
-			endDate: new Date(),
+			startDate: new Date(dates[0].startDate),
+			endDate: new Date(dates[0].endDate),
 			key: 'selection',
 		},
 	]);
+	const [totalBill, setTotalBill] = useState(0);
+	const checkboxHandler = (roomPrice, isChecked) => {
+		if (isChecked) {
+			setTotalBill((prevPrice) => prevPrice + roomPrice);
+		} else {
+			setTotalBill((prevPrice) => prevPrice - roomPrice);
+		}
+	};
 
 	return (
 		<div className='reserve-container' ref={ref}>
@@ -78,6 +89,9 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 													id={`room${roomNumber.number}`}
 													name={`room${roomNumber.number}`}
 													value={roomNumber.number}
+													onChange={(e) =>
+														checkboxHandler(room.price, e.target.checked)
+													}
 												/>
 											</li>
 										);
@@ -90,7 +104,7 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 
 			{/* Total bill */}
 			<div className='total-bill'>
-				<h2>Total Bill: $700</h2>
+				<h2>Total Bill: ${totalBill}</h2>
 				<select className='payment-method'>
 					<option value='Select Payment Method'>Select Payment Method</option>
 					<option value='Credit Card'>Credit Card</option>
