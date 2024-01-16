@@ -14,6 +14,9 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 			key: 'selection',
 		},
 	]);
+	const countDate = Math.round(
+		(state[0].endDate - state[0].startDate) / (1000 * 3600 * 24)
+	);
 	const [totalBill, setTotalBill] = useState(0);
 	const checkboxHandler = (roomPrice, isChecked) => {
 		if (isChecked) {
@@ -104,7 +107,7 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 
 			{/* Total bill */}
 			<div className='total-bill'>
-				<h2>Total Bill: ${totalBill}</h2>
+				<h2>Total Bill: ${totalBill * countDate}</h2>
 				<select className='payment-method'>
 					<option value='Select Payment Method'>Select Payment Method</option>
 					<option value='Credit Card'>Credit Card</option>
