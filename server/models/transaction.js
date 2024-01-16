@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
 	user: {
-		type: String,
+		type: Object,
 		required: true,
 	},
 	hotel: {
@@ -12,15 +12,20 @@ const transactionSchema = new Schema({
 		ref: 'Hotel',
 		required: true,
 	},
-	rooms: {
-		type: [{ type: Number, required: true }],
-		required: true,
-	},
-	dateStart: {
+	rooms: [
+		{
+			roomId: {
+				type: Schema.Types.ObjectId,
+				ref: 'Room',
+			},
+			roomNumbers: [Number],
+		},
+	],
+	startDate: {
 		type: Date,
 		required: true,
 	},
-	dateEnd: {
+	endDate: {
 		type: Date,
 		required: true,
 	},

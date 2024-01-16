@@ -16,4 +16,6 @@ router.get('/search', hotelController.searchHotels);
 
 router.get('/find/:id', hotelController.getHotelById);
 
+router.post('/reserve', hotelController.reserveBooking);
+
 module.exports = router;

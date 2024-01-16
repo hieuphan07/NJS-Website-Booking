@@ -23,7 +23,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const [totalBill, setTotalBill] = useState(0);
 
 	const [transaction, setTransaction] = useState({
-		user: '',
+		user: { fullName: '', email: '', phoneNumber: '', identityNumber: '' },
 		hotel: hotelId,
 		rooms: [],
 		startDate: dates[0].startDate,
@@ -83,6 +83,16 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		}
 	};
 
+	const reserveHandler = () => {
+		fetch('http://localhost:5500/hotels/reserve', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(transaction),
+		});
+	};
+
 	return (
 		<div className='reserve-container' ref={ref}>
 			{/* Date range picker */}
@@ -123,15 +133,49 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 				<h2>Reserve Info</h2>
 				<form>
 					<label htmlFor='fullName'>Your Full Name:</label>
-					<input type='test' id='fullName' placeholder='Full Name' required />
+					<input
+						type='test'
+						id='fullName'
+						placeholder='Full Name'
+						required
+						onChange={(e) =>
+							setTransaction((prev) => {
+								return {
+									...prev,
+									user: { ...prev.user, fullName: e.target.value },
+								};
+							})
+						}
+					/>
 					<label htmlFor='email'>Your Email:</label>
-					<input type='email' id='email' placeholder='Email' required />
+					<input
+						type='email'
+						id='email'
+						placeholder='Email'
+						required
+						onChange={(e) =>
+							setTransaction((prev) => {
+								return {
+									...prev,
+									user: { ...prev.user, email: e.target.value },
+								};
+							})
+						}
+					/>
 					<label htmlFor='phoneNumber'>Your Phone Number:</label>
 					<input
 						type='number'
 						id='phoneNumber'
 						placeholder='Phone Number'
 						required
+						onChange={(e) =>
+							setTransaction((prev) => {
+								return {
+									...prev,
+									user: { ...prev.user, phoneNumber: e.target.value },
+								};
+							})
+						}
 					/>
 					<label htmlFor='cardNumber'>Your Identity Card Number:</label>
 					<input
@@ -139,6 +183,14 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 						id='cardNumber'
 						placeholder='Card Number'
 						required
+						onChange={(e) =>
+							setTransaction((prev) => {
+								return {
+									...prev,
+									user: { ...prev.user, identityNumber: e.target.value },
+								};
+							})
+						}
 					/>
 				</form>
 			</div>
@@ -205,7 +257,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 			</div>
 
 			{/* Button actions */}
-			<div className='action'>
+			<div className='action' onClick={reserveHandler}>
 				<button className='btn'>Reserve Now</button>
 			</div>
 		</div>
