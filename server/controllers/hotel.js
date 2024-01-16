@@ -65,4 +65,7 @@ exports.countByType = async (req, res, next) => {
 	}
 };
 
-exports.reserveBooking = async (req, res, next) => {};
+exports.reserveBooking = async (req, res, next) => {
+	const transaction = req.body;
+	Transaction.create(transaction);
+};
