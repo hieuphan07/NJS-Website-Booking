@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectDates } from '../../redux-store/features/search/searchSlice';
+import { setDates } from '../../redux-store/features/search/searchSlice';
 import { DateRange } from 'react-date-range';
 
 import './Reserve.css';
 
-const Reserve = React.forwardRef(({ rooms }, ref) => {
+const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
+	const dispatch = useDispatch();
 	const dates = useSelector(selectDates);
-	const [state, setState] = useState([
+	const [date, setDate] = useState([
 		{
 			startDate: new Date(dates[0].startDate),
 			endDate: new Date(dates[0].endDate),
@@ -15,26 +17,71 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 		},
 	]);
 	const countDate = Math.round(
-		(state[0].endDate - state[0].startDate) / (1000 * 3600 * 24)
+		(date[0].endDate - date[0].startDate) / (1000 * 3600 * 24)
 	);
+
 	const [totalBill, setTotalBill] = useState(0);
-	const checkboxHandler = (roomPrice, isChecked) => {
-		if (isChecked) {
-			setTotalBill((prevPrice) => prevPrice + roomPrice);
-		} else {
-			setTotalBill((prevPrice) => prevPrice - roomPrice);
-		}
-	};
+
 	const [transaction, setTransaction] = useState({
 		user: '',
-		hotel: '',
-		room: [],
-		startDate: '',
-		endDate: '',
+		hotel: hotelId,
+		rooms: [],
+		startDate: dates[0].startDate,
+		endDate: dates[0].endDate,
 		price: 0,
-		payment: 'Cash',
+		payment: '',
 		status: 'Booked',
 	});
+	console.log(transaction);
+
+	// Handle checkbox rooms
+	const selectRoomNumberHandler = (
+		roomPrice,
+		isChecked,
+		roomId,
+		roomNumber
+	) => {
+		if (isChecked) {
+			setTotalBill((prevPrice) => {
+				prevPrice = prevPrice + roomPrice;
+				setTransaction({ ...transaction, price: prevPrice * countDate });
+				return prevPrice;
+			});
+			setTransaction((prevTransaction) => {
+				const roomArr = prevTransaction.rooms;
+				const roomIndex = roomArr.findIndex((room) => room.roomId === roomId);
+
+				if (roomIndex !== -1) {
+					roomArr[roomIndex].roomNumbers.push(roomNumber);
+				} else {
+					roomArr.push({ roomId: roomId, roomNumbers: [roomNumber] });
+				}
+
+				return { ...prevTransaction, rooms: roomArr };
+			});
+		} else {
+			setTotalBill((prevPrice) => {
+				prevPrice = prevPrice - roomPrice;
+				setTransaction({ ...transaction, price: prevPrice * countDate });
+				return prevPrice;
+			});
+			setTransaction((prevTransaction) => {
+				const roomArr = prevTransaction.rooms;
+				const roomIndex = roomArr.findIndex((room) => room.roomId === roomId);
+
+				if (roomArr[roomIndex].roomNumbers.length === 1) {
+					roomArr.splice(roomIndex, 1);
+				} else {
+					const updatedRoomNumbers = roomArr[roomIndex].roomNumbers.filter(
+						(currRoomNumber) => currRoomNumber !== roomNumber
+					);
+					roomArr[roomIndex].roomNumbers = updatedRoomNumbers;
+				}
+
+				return { ...prevTransaction, rooms: roomArr };
+			});
+		}
+	};
 
 	return (
 		<div className='reserve-container' ref={ref}>
@@ -43,9 +90,31 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 				<h2>Dates</h2>
 				<DateRange
 					editableDateInputs={true}
-					onChange={(item) => setState([item.selection])}
 					moveRangeOnFirstSelection={false}
-					ranges={state}
+					ranges={date.map(({ startDate, endDate, key }) => ({
+						startDate: new Date(startDate),
+						endDate: new Date(endDate),
+						key,
+					}))}
+					minDate={new Date()}
+					onChange={(item) => {
+						const newDate = {
+							...item.selection,
+							startDate: item.selection.startDate.getTime(),
+							endDate: item.selection.endDate.getTime(),
+						};
+						const newCountDate = Math.round(
+							(newDate.endDate - newDate.startDate) / (1000 * 3600 * 24)
+						);
+						setDate([newDate]);
+						dispatch(setDates([newDate]));
+						setTransaction({
+							...transaction,
+							startDate: newDate.startDate,
+							endDate: newDate.endDate,
+							price: totalBill * newCountDate,
+						});
+					}}
 				/>
 			</div>
 
@@ -103,7 +172,12 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 													name={`room${roomNumber.number}`}
 													value={roomNumber.number}
 													onChange={(e) =>
-														checkboxHandler(room.price, e.target.checked)
+														selectRoomNumberHandler(
+															room.price,
+															e.target.checked,
+															room._id,
+															roomNumber.number
+														)
 													}
 												/>
 											</li>
@@ -120,7 +194,9 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 				<h2>Total Bill: ${totalBill * countDate}</h2>
 				<select
 					className='payment-method'
-					onChange={(e) => setTransaction({ payment: e.target.value })}
+					onChange={(e) =>
+						setTransaction({ ...transaction, payment: e.target.value })
+					}
 				>
 					<option value='Select Payment Method'>Select Payment Method</option>
 					<option value='Credit Card'>Credit Card</option>

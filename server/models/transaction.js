@@ -12,7 +12,7 @@ const transactionSchema = new Schema({
 		ref: 'Hotel',
 		required: true,
 	},
-	room: {
+	rooms: {
 		type: [{ type: Number, required: true }],
 		required: true,
 	},

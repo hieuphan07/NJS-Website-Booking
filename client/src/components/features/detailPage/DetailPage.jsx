@@ -93,7 +93,13 @@ const DetailPage = () => {
 					</div>
 				</div>
 			)}
-			{isReserveOpen && <Reserve ref={reserveRef} rooms={detailHotel.rooms} />}
+			{isReserveOpen && (
+				<Reserve
+					ref={reserveRef}
+					rooms={detailHotel.rooms}
+					hotelId={detailHotel?._id}
+				/>
+			)}
 		</div>
 	);
 };
