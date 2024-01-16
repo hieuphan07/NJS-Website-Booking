@@ -1,4 +1,5 @@
 const Hotel = require('../models/hotel');
+const Transaction = require('../models/transaction');
 
 exports.getHotels = (req, res, next) => {
 	Hotel.find()
@@ -63,3 +64,5 @@ exports.countByType = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.reserveBooking = async (req, res, next) => {};

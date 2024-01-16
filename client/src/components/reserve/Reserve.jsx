@@ -25,6 +25,16 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 			setTotalBill((prevPrice) => prevPrice - roomPrice);
 		}
 	};
+	const [transaction, setTransaction] = useState({
+		user: '',
+		hotel: '',
+		room: [],
+		startDate: '',
+		endDate: '',
+		price: 0,
+		payment: 'Cash',
+		status: 'Booked',
+	});
 
 	return (
 		<div className='reserve-container' ref={ref}>
@@ -108,7 +118,10 @@ const Reserve = React.forwardRef(({ rooms }, ref) => {
 			{/* Total bill */}
 			<div className='total-bill'>
 				<h2>Total Bill: ${totalBill * countDate}</h2>
-				<select className='payment-method'>
+				<select
+					className='payment-method'
+					onChange={(e) => setTransaction({ payment: e.target.value })}
+				>
 					<option value='Select Payment Method'>Select Payment Method</option>
 					<option value='Credit Card'>Credit Card</option>
 					<option value='Cash'>Cash</option>
