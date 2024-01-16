@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDates } from '../../redux-store/features/search/searchSlice';
 import { setDates } from '../../redux-store/features/search/searchSlice';
+import { useNavigate } from 'react-router-dom';
 import { DateRange } from 'react-date-range';
 
 import './Reserve.css';
 
 const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dates = useSelector(selectDates);
 	const [date, setDate] = useState([
@@ -32,7 +34,6 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		payment: '',
 		status: 'Booked',
 	});
-	console.log(transaction);
 
 	// Handle checkbox rooms
 	const selectRoomNumberHandler = (
@@ -83,14 +84,43 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		}
 	};
 
+	const [isValid, setIsValid] = useState(false);
+	useEffect(() => {
+		if (
+			transaction.user.fullName !== '' &&
+			transaction.user.email !== '' &&
+			transaction.user.phoneNumber !== '' &&
+			transaction.user.identityNumber !== '' &&
+			transaction.price !== 0 &&
+			transaction.payment !== '' &&
+			transaction.payment !== 'Select Payment Method'
+		) {
+			setIsValid(true);
+		} else {
+			setIsValid(false);
+		}
+	}, [
+		transaction.payment,
+		transaction.price,
+		transaction.user.email,
+		transaction.user.fullName,
+		transaction.user.identityNumber,
+		transaction.user.phoneNumber,
+	]);
+
 	const reserveHandler = () => {
-		fetch('http://localhost:5500/hotels/reserve', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(transaction),
-		});
+		if (isValid) {
+			fetch('http://localhost:5500/hotels/reserve', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(transaction),
+			});
+			navigate('/transaction');
+		} else {
+			alert('Check validation of input fields');
+		}
 	};
 
 	return (
