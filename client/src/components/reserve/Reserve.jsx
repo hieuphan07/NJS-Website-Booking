@@ -43,36 +43,46 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		roomNumber
 	) => {
 		if (isChecked) {
+			// Calc the total bill
 			setTotalBill((prevPrice) => {
 				prevPrice = prevPrice + roomPrice;
 				setTransaction({ ...transaction, price: prevPrice * countDate });
 				return prevPrice;
 			});
+
 			setTransaction((prevTransaction) => {
 				const roomArr = prevTransaction.rooms;
+				// check exist
 				const roomIndex = roomArr.findIndex((room) => room.roomId === roomId);
 
+				// update exist
 				if (roomIndex !== -1) {
 					roomArr[roomIndex].roomNumbers.push(roomNumber);
 				} else {
+					// push new
 					roomArr.push({ roomId: roomId, roomNumbers: [roomNumber] });
 				}
 
 				return { ...prevTransaction, rooms: roomArr };
 			});
 		} else {
+			// Calc the total bill
 			setTotalBill((prevPrice) => {
 				prevPrice = prevPrice - roomPrice;
 				setTransaction({ ...transaction, price: prevPrice * countDate });
 				return prevPrice;
 			});
+
 			setTransaction((prevTransaction) => {
 				const roomArr = prevTransaction.rooms;
+				// check exist index
 				const roomIndex = roomArr.findIndex((room) => room.roomId === roomId);
 
+				// remove room if no roomNumber chosen
 				if (roomArr[roomIndex].roomNumbers.length === 1) {
 					roomArr.splice(roomIndex, 1);
 				} else {
+					// remove roomNumber unchecked
 					const updatedRoomNumbers = roomArr[roomIndex].roomNumbers.filter(
 						(currRoomNumber) => currRoomNumber !== roomNumber
 					);
