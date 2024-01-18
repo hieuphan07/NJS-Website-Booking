@@ -38,8 +38,8 @@ const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
 	const startDate = format(dates[0].startDate, 'MM/dd/yyyy');
 	const endDate = format(dates[0].endDate, 'MM/dd/yyyy');
 
-	const [min, setMin] = useState(1);
-	const [max, setMax] = useState(999);
+	const [min, setMin] = useState('');
+	const [max, setMax] = useState('');
 
 	// useState for Opening/Hiding the date range picker
 	const [isOpen, setIsOpen] = useState(false);
