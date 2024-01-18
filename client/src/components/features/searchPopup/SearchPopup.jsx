@@ -31,7 +31,9 @@ const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
 	const [date, setDate] = useState([
 		{
 			startDate: enteredDates ? enteredDates[0].startDate : new Date(),
-			endDate: enteredDates ? enteredDates[0].endDate : new Date(),
+			endDate: enteredDates
+				? enteredDates[0].endDate
+				: new Date().setDate(new Date().getDate() + 1),
 			key: 'selection',
 		},
 	]);

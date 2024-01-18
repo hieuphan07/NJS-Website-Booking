@@ -5,7 +5,7 @@ const initialState = {
 	dates: [
 		{
 			startDate: new Date().getTime(),
-			endDate: new Date().getTime(),
+			endDate: new Date().getTime() + 1000 * 3600 * 24,
 		},
 	],
 	options: {

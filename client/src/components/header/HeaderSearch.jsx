@@ -33,7 +33,7 @@ const HeaderSearch = () => {
 	const [date, setDate] = useState([
 		{
 			startDate: new Date(),
-			endDate: new Date(),
+			endDate: new Date().setDate(new Date().getDate() + 1),
 			key: 'selection',
 		},
 	]);
