@@ -38,13 +38,16 @@ const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
 	const startDate = format(dates[0].startDate, 'MM/dd/yyyy');
 	const endDate = format(dates[0].endDate, 'MM/dd/yyyy');
 
+	const [min, setMin] = useState(1);
+	const [max, setMax] = useState(999);
+
 	// useState for Opening/Hiding the date range picker
 	const [isOpen, setIsOpen] = useState(false);
 	const setIsOpenHandler = () => setIsOpen(!isOpen);
 
 	const searchHandler = () => {
 		navigate('/search', {
-			state: { city, dates, options },
+			state: { city, dates, options, min, max },
 		});
 	};
 
@@ -118,12 +121,22 @@ const SearchPopup = ({ enteredCity, enteredDates, enteredOptions }) => {
 							{/* Min price */}
 							<div className='search-popup__option'>
 								<span className='search-popup__key'>Min price per night</span>
-								<input type='number' className='search-popup__input' />
+								<input
+									type='number'
+									className='search-popup__input'
+									value={min}
+									onChange={(e) => setMin(e.target.value)}
+								/>
 							</div>
 							{/* Max price */}
 							<div className='search-popup__option'>
 								<span className='search-popup__key'>Max price per night</span>
-								<input type='number' className='search-popup__input' />
+								<input
+									type='number'
+									className='search-popup__input'
+									value={max}
+									onChange={(e) => setMax(e.target.value)}
+								/>
 							</div>
 							{/* Number of adult */}
 							<div className='search-popup__option'>

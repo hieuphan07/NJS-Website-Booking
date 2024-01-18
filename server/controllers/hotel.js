@@ -26,10 +26,13 @@ exports.getHotelById = async (req, res, next) => {
 };
 
 exports.searchHotels = async (req, res, next) => {
-	const seachingCity = req.query.city;
+	const { city, date, option, min, max } = req.query;
 
 	try {
-		const cityHotels = await Hotel.find({ city: seachingCity });
+		const cityHotels = await Hotel.find({
+			city: city,
+			cheapestPrice: { $gt: min, $lt: max },
+		});
 		return res.status(200).json(cityHotels);
 	} catch (err) {
 		next(err);
