@@ -55,6 +55,7 @@ exports.createUser = async (req, res, next) => {
 			errors,
 		});
 	}
+
 	try {
 		const newUser = await User.create(user);
 		if (newUser) {
@@ -74,36 +75,44 @@ exports.login = async (req, res, next) => {
 	let errors = {};
 	let authToken;
 
-	const emailValid = isValidEmail(email);
-	if (emailValid) {
-		const [loggingUser] = await User.find({ email: email });
-		if (loggingUser) {
-			if (password === loggingUser.password) {
-				authToken = createJSONToken(loggingUser.email);
+	try {
+		const emailValid = isValidEmail(email);
+		if (emailValid) {
+			const [loggingUser] = await User.find({ email: email });
+			if (loggingUser) {
+				if (password === loggingUser.password) {
+					authToken = createJSONToken(loggingUser.email);
+				} else {
+					errors.password = 'Password is incorrect. Try again.';
+				}
 			} else {
-				errors.password = 'Password is incorrect. Try again.';
+				errors.email = 'User not found.';
 			}
 		} else {
-			errors.email = 'User not found.';
+			errors.validEmail = 'Email is not valid.';
 		}
-	} else {
-		errors.validEmail = 'Email is not valid.';
-	}
 
-	if (Object.values(errors).length > 0) {
-		return res.status(422).json({
-			message: 'Invalid credentials.',
-			errors: errors,
-		});
-	} else {
-		return res.json({ token: authToken });
+		if (Object.values(errors).length > 0) {
+			return res.status(422).json({
+				message: 'Invalid credentials.',
+				errors: errors,
+			});
+		} else {
+			return res.json({ token: authToken });
+		}
+	} catch (err) {
+		next(err);
 	}
 };
 
-exports.getUser = (req, res, next) => {
+exports.getUser = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
-	if (token) {
-		const email = verifyEmail(token);
-		return res.json(email);
+	try {
+		if (token) {
+			const email = verifyEmail(token);
+			return res.json(email);
+		}
+	} catch (err) {
+		next(err);
 	}
 };

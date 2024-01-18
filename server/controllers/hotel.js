@@ -1,37 +1,44 @@
 const Hotel = require('../models/hotel');
 const Transaction = require('../models/transaction');
 
-exports.getHotels = (req, res, next) => {
-	Hotel.find()
-		.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
-		.exec()
-		.then((hotels) => {
-			res.json(hotels);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+exports.getHotels = async (req, res, next) => {
+	try {
+		const hotels = await Hotel.find()
+			.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
+			.exec();
+		return res.status(200).json(hotels);
+	} catch (err) {
+		next(err);
+	}
 };
 
 exports.getHotelById = async (req, res, next) => {
 	const hotelId = req.params.id;
-	Hotel.findById(hotelId)
-		.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
-		.exec()
-		.then((hotel) => {
-			res.json(hotel);
-		})
-		.catch((err) => console.log(err));
+
+	try {
+		const hotel = await Hotel.findById(hotelId)
+			.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
+			.exec();
+		return res.status(200).json(hotel);
+	} catch (err) {
+		next(err);
+	}
 };
 
-exports.searchHotels = (req, res, next) => {
-	Hotel.find({ city: req.query.city })
-		.then((hotels) => res.json(hotels))
-		.catch((err) => console.log(err));
+exports.searchHotels = async (req, res, next) => {
+	const seachingCity = req.query.city;
+
+	try {
+		const cityHotels = await Hotel.find({ city: seachingCity });
+		return res.status(200).json(cityHotels);
+	} catch (err) {
+		next(err);
+	}
 };
 
 exports.countByCity = async (req, res, next) => {
 	const cities = req.query.cities.split(',');
+
 	try {
 		const list = await Promise.all(
 			cities.map((city) => {
@@ -66,5 +73,11 @@ exports.countByType = async (req, res, next) => {
 
 exports.reserveBooking = async (req, res, next) => {
 	const transaction = req.body;
-	// Transaction.create(transaction);
+	try {
+		// Transaction.create(transaction);
+		const hotel = await Hotel.findById(req.body.hotel);
+		return res.json(hotel);
+	} catch (err) {
+		next(err);
+	}
 };

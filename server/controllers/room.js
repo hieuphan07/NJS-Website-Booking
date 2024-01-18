@@ -1,11 +1,10 @@
 const Room = require('../models/room');
 
-exports.getRooms = (req, res, next) => {
-	Room.find()
-		.then((rooms) => {
-			res.json(rooms);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+exports.getRooms = async (req, res, next) => {
+	try {
+		const rooms = await Room.find();
+		res.status(200).json(rooms);
+	} catch (err) {
+		console.log(err);
+	}
 };
