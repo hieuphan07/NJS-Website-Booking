@@ -26,7 +26,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 
 	const [transaction, setTransaction] = useState({
 		user: { fullName: '', email: '', phoneNumber: '', identityNumber: '' },
-		hotel: hotelId,
+		hotelId: hotelId,
 		rooms: [],
 		startDate: dates[0].startDate,
 		endDate: dates[0].endDate,
@@ -262,7 +262,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 													type='checkbox'
 													id={`room${roomNumber.number}`}
 													name={`room${roomNumber.number}`}
-													value={roomNumber.number}
+													value={roomNumber._id}
 													onChange={(e) =>
 														selectRoomNumberHandler(
 															room.price,

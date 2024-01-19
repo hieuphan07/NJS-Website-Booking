@@ -1,4 +1,5 @@
 const Hotel = require('../models/hotel');
+const Room = require('../models/room');
 const Transaction = require('../models/transaction');
 
 exports.getHotels = async (req, res, next) => {
@@ -77,9 +78,26 @@ exports.countByType = async (req, res, next) => {
 exports.reserveBooking = async (req, res, next) => {
 	const transaction = req.body;
 	try {
-		// Transaction.create(transaction);
-		const hotel = await Hotel.findById(req.body.hotel);
-		return res.json(hotel);
+		Transaction.create(transaction);
+		// Update date that user booked
+		const hotelInDb = await Hotel.findByIdAndUpdate(req.body.hotelId);
+		for (let room of transaction.rooms) {
+			const roomIdInDb = hotelInDb.rooms.find(
+				(item) => item.toString() === room.roomId.toString()
+			);
+			const roomInDb = await Room.findById(roomIdInDb);
+			for (let roomNumber of room.roomNumbers) {
+				const roomNumberInDb = roomInDb.roomNumbers.find(
+					(item) => item.number === roomNumber
+				);
+				roomNumberInDb.unavailableDates.push({
+					startDate: transaction.startDate,
+					endDate: transaction.endDate,
+				});
+			}
+			roomInDb.save();
+		}
+		return res.json({ message: 'Transaction created' });
 	} catch (err) {
 		next(err);
 	}

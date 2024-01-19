@@ -8,3 +8,12 @@ exports.getRooms = async (req, res, next) => {
 		console.log(err);
 	}
 };
+
+exports.getRoom = async (req, res, next) => {
+	try {
+		const room = await Room.findById(req.params.id);
+		return res.status(200).json(room);
+	} catch (err) {
+		next(err);
+	}
+};

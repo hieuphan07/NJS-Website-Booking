@@ -9,7 +9,7 @@ const initialState = {
 		},
 	],
 	options: {
-		adult: 2,
+		adult: 1,
 		children: 0,
 		room: 1,
 	},

@@ -7,7 +7,7 @@ const transactionSchema = new Schema({
 		type: Object,
 		required: true,
 	},
-	hotel: {
+	hotelId: {
 		type: Schema.Types.ObjectId,
 		ref: 'Hotel',
 		required: true,
@@ -18,7 +18,7 @@ const transactionSchema = new Schema({
 				type: Schema.Types.ObjectId,
 				ref: 'Room',
 			},
-			roomNumbers: [Number],
+			roomNumbers: [String],
 		},
 	],
 	startDate: {
