@@ -35,6 +35,21 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
     status: "Booked",
   });
 
+  // Filter room numbers by selecting date
+  const [roomNubersByDate, setRoomNumbersByDate] = useState("");
+  const setRoomNumbersByDateHandler = (startDate, endDate, rooms) => {
+    for (let room of rooms) {
+      for (let roomNumber of room.roomNubers) {
+        for (let unavailableDate of roomNumber.unavailableDates) {
+          return (
+            startDate > unavailableDate.endDate ||
+            endDate < unavailableDate.startDate
+          );
+        }
+      }
+    }
+  };
+
   // Handle checkbox rooms
   const selectRoomNumberHandler = (
     roomPrice,
