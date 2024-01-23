@@ -11,6 +11,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dates = useSelector(selectDates);
+	const [filteredRooms, setFilteredRooms] = useState([]);
 	const [date, setDate] = useState([
 		{
 			startDate: new Date(dates[0].startDate),
@@ -34,20 +35,6 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		payment: '',
 		status: 'Booked',
 	});
-
-	// Filter room numbers by selecting date
-	const [filteredRooms, setFilteredRooms] = useState([]);
-	const isRoomAvailable = (roomNumber, startDate, endDate) => {
-		return !roomNumber.unavailableDates.some((unavailableDate) => {
-			const unavailableStart = new Date(unavailableDate.startDate).getTime();
-			const unavailableEnd = new Date(unavailableDate.endDate).getTime();
-			return (
-				(startDate >= unavailableStart && startDate < unavailableEnd) ||
-				(endDate > unavailableStart && endDate <= unavailableEnd) ||
-				(startDate <= unavailableStart && endDate >= unavailableEnd)
-			);
-		});
-	};
 
 	// Handle checkbox rooms
 	const selectRoomNumberHandler = (
@@ -134,6 +121,19 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		transaction.user.identityNumber,
 		transaction.user.phoneNumber,
 	]);
+
+	// Filter room numbers by selecting date
+	const isRoomAvailable = (roomNumber, startDate, endDate) => {
+		return !roomNumber.unavailableDates.some((unavailableDate) => {
+			const unavailableStart = new Date(unavailableDate.startDate).getTime();
+			const unavailableEnd = new Date(unavailableDate.endDate).getTime();
+			return (
+				(startDate >= unavailableStart && startDate < unavailableEnd) ||
+				(endDate > unavailableStart && endDate <= unavailableEnd) ||
+				(startDate <= unavailableStart && endDate >= unavailableEnd)
+			);
+		});
+	};
 
 	// Modify the DateRange onChange handler to filter rooms based on the selected date
 	const handleDateChange = (item) => {
@@ -276,7 +276,9 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 			{/* Select room */}
 			<div className='select-room'>
 				<h2>Selects Room</h2>
-				{(!rooms || rooms?.length === 0) && <p>No rooms available.</p>}
+				{(!filteredRooms || filteredRooms?.length === 0) && (
+					<p>No rooms available.</p>
+				)}
 				{filteredRooms?.length > 0 &&
 					filteredRooms.map((room, index) => {
 						return (
