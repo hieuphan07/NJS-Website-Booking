@@ -11,7 +11,6 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dates = useSelector(selectDates);
-	const [filteredRooms, setFilteredRooms] = useState([]);
 	const [date, setDate] = useState([
 		{
 			startDate: new Date(dates[0].startDate),
@@ -22,6 +21,30 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const countDate = Math.round(
 		(date[0].endDate - date[0].startDate) / (1000 * 3600 * 24)
 	);
+
+	// Filter room numbers by selecting date
+	const isRoomAvailable = (roomNumber, startDate, endDate) => {
+		return !roomNumber.unavailableDates.some((unavailableDate) => {
+			const unavailableStart = new Date(unavailableDate.startDate).getTime();
+			const unavailableEnd = new Date(unavailableDate.endDate).getTime();
+			return (
+				(startDate >= unavailableStart && startDate < unavailableEnd) ||
+				(endDate > unavailableStart && endDate <= unavailableEnd) ||
+				(startDate <= unavailableStart && endDate >= unavailableEnd)
+			);
+		});
+	};
+
+	const initialRooms = rooms.map((room) => {
+		return {
+			...room,
+			roomNumbers: room.roomNumbers.filter((roomNumber) =>
+				isRoomAvailable(roomNumber, dates[0].startDate, dates[0].endDate)
+			),
+		};
+	});
+
+	const [filteredRooms, setFilteredRooms] = useState(initialRooms);
 
 	const [totalBill, setTotalBill] = useState(0);
 
@@ -121,19 +144,6 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 		transaction.user.identityNumber,
 		transaction.user.phoneNumber,
 	]);
-
-	// Filter room numbers by selecting date
-	const isRoomAvailable = (roomNumber, startDate, endDate) => {
-		return !roomNumber.unavailableDates.some((unavailableDate) => {
-			const unavailableStart = new Date(unavailableDate.startDate).getTime();
-			const unavailableEnd = new Date(unavailableDate.endDate).getTime();
-			return (
-				(startDate >= unavailableStart && startDate < unavailableEnd) ||
-				(endDate > unavailableStart && endDate <= unavailableEnd) ||
-				(startDate <= unavailableStart && endDate >= unavailableEnd)
-			);
-		});
-	};
 
 	// Modify the DateRange onChange handler to filter rooms based on the selected date
 	const handleDateChange = (item) => {
