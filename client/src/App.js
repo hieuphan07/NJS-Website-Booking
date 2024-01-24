@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Transaction from './pages/Transaction';
 import Error from './pages/Error';
+import ProtectedRoute from './utils/ProtectedRoute';
 import { action as authManipulateAction } from '../src/components/auth-action/auth-action';
 
 const router = createBrowserRouter([
@@ -22,7 +23,14 @@ const router = createBrowserRouter([
 			{ path: 'detail/:id', element: <Detail /> },
 			{ path: 'login', element: <Login />, action: authManipulateAction },
 			{ path: 'signup', element: <Signup />, action: authManipulateAction },
-			{ path: 'transaction', element: <Transaction /> },
+			{
+				path: 'transaction',
+				element: (
+					<ProtectedRoute>
+						<Transaction />
+					</ProtectedRoute>
+				),
+			},
 		],
 	},
 ]);
