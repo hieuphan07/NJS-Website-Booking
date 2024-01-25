@@ -1,5 +1,6 @@
 const Room = require('../models/room');
 
+// get rooms
 exports.getRooms = async (req, res, next) => {
 	try {
 		const rooms = await Room.find();
@@ -9,6 +10,7 @@ exports.getRooms = async (req, res, next) => {
 	}
 };
 
+// get room
 exports.getRoom = async (req, res, next) => {
 	try {
 		const room = await Room.findById(req.params.id);

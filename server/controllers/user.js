@@ -7,6 +7,7 @@ const {
 } = require('../util/validation');
 const { createJSONToken, verifyEmail } = require('../util/auth');
 
+// post create a new user
 exports.createUser = async (req, res, next) => {
 	const fullName = req.body.fullName;
 	const email = req.body.email;
@@ -69,6 +70,7 @@ exports.createUser = async (req, res, next) => {
 	}
 };
 
+// post login
 exports.login = async (req, res, next) => {
 	const email = req.body.email;
 	const password = req.body.password;
@@ -105,6 +107,7 @@ exports.login = async (req, res, next) => {
 	}
 };
 
+// get login
 exports.getUser = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	try {
