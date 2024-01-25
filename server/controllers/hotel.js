@@ -31,7 +31,7 @@ exports.searchHotels = async (req, res, next) => {
 
 	try {
 		const cityHotels = await Hotel.find({
-			city: city,
+			city: new RegExp(`^${city}$`, 'i'),
 			cheapestPrice: { $gte: min, $lte: max },
 		});
 		return res.status(200).json(cityHotels);
