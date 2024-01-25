@@ -2,6 +2,7 @@ const Hotel = require('../models/hotel');
 const Room = require('../models/room');
 const Transaction = require('../models/transaction');
 
+// get ALL hotels
 exports.getHotels = async (req, res, next) => {
 	try {
 		const hotels = await Hotel.find()
@@ -13,33 +14,7 @@ exports.getHotels = async (req, res, next) => {
 	}
 };
 
-exports.getHotelById = async (req, res, next) => {
-	const hotelId = req.params.id;
-
-	try {
-		const hotel = await Hotel.findById(hotelId)
-			.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
-			.exec();
-		return res.status(200).json(hotel);
-	} catch (err) {
-		next(err);
-	}
-};
-
-exports.searchHotels = async (req, res, next) => {
-	const { city, date, option, min, max } = req.query;
-
-	try {
-		const cityHotels = await Hotel.find({
-			city: new RegExp(`^${city}$`, 'i'),
-			cheapestPrice: { $gte: min, $lte: max },
-		});
-		return res.status(200).json(cityHotels);
-	} catch (err) {
-		next(err);
-	}
-};
-
+// get count properties by city
 exports.countByCity = async (req, res, next) => {
 	const cities = req.query.cities.split(',');
 
@@ -55,6 +30,7 @@ exports.countByCity = async (req, res, next) => {
 	}
 };
 
+// get count properties by type
 exports.countByType = async (req, res, next) => {
 	try {
 		const hotelCount = await Hotel.countDocuments({ type: 'hotel' });
@@ -75,21 +51,55 @@ exports.countByType = async (req, res, next) => {
 	}
 };
 
+// get hotel
+exports.getHotelById = async (req, res, next) => {
+	const hotelId = req.params.id;
+
+	try {
+		const hotel = await Hotel.findById(hotelId)
+			.populate({ path: 'rooms', populate: { path: 'roomNumbers._id' } })
+			.exec();
+		return res.status(200).json(hotel);
+	} catch (err) {
+		next(err);
+	}
+};
+
+//  get search hotels
+exports.searchHotels = async (req, res, next) => {
+	const { city, date, option, min, max } = req.query;
+
+	try {
+		const cityHotels = await Hotel.find({
+			city: new RegExp(`^${city}$`, 'i'),
+			cheapestPrice: { $gte: min, $lte: max },
+		});
+		return res.status(200).json(cityHotels);
+	} catch (err) {
+		next(err);
+	}
+};
+
+// post reserve booking
 exports.reserveBooking = async (req, res, next) => {
 	const transaction = req.body;
 	try {
+		// create a new transaction
 		Transaction.create(transaction);
-		// Update date that user booked
+		// update unavailable date for booked hotel
 		const hotelInDb = await Hotel.findByIdAndUpdate(req.body.hotelId);
 		for (let room of transaction.rooms) {
+			// find rooms in database matches to transaction
 			const roomIdInDb = hotelInDb.rooms.find(
 				(item) => item.toString() === room.roomId.toString()
 			);
 			const roomInDb = await Room.findById(roomIdInDb);
 			for (let roomNumber of room.roomNumbers) {
+				// find room numbers in database matches to transaction
 				const roomNumberInDb = roomInDb.roomNumbers.find(
 					(item) => item.number === roomNumber
 				);
+				// update unavailable date
 				roomNumberInDb.unavailableDates.push({
 					startDate: transaction.startDate,
 					endDate: transaction.endDate,

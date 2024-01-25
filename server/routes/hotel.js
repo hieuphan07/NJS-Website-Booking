@@ -12,9 +12,9 @@ router.get('/countByCity', hotelController.countByCity);
 
 router.get('/countByType', hotelController.countByType);
 
-router.get('/search', hotelController.searchHotels);
-
 router.get('/find/:id', hotelController.getHotelById);
+
+router.get('/search', hotelController.searchHotels);
 
 router.post('/reserve', hotelController.reserveBooking);
 
