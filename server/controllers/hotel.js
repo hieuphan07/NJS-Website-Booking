@@ -67,14 +67,78 @@ exports.getHotelById = async (req, res, next) => {
 
 //  get search hotels
 exports.searchHotels = async (req, res, next) => {
-	const { city, date, option, min, max } = req.query;
+	const { city, startDate, endDate, numberOfPeople, minPrice, maxPrice } =
+		req.query;
+	console.log(city, startDate, endDate, numberOfPeople, minPrice, maxPrice);
 
 	try {
-		const cityHotels = await Hotel.find({
-			city: new RegExp(`^${city}$`, 'i'),
-			cheapestPrice: { $gte: min, $lte: max },
-		});
-		return res.status(200).json(cityHotels);
+		const hotels = await Hotel.aggregate([
+			// Match hotels in the specified city
+			{ $match: { city: new RegExp(`^${city}$`, 'i') } },
+			// Match hotels within the price range
+			{
+				$match: {
+					cheapestPrice: { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) },
+				},
+			},
+			// Populate the rooms using $lookup
+			{
+				$lookup: {
+					from: 'rooms', // the name of the collection where the room documents are stored
+					localField: 'hotels', // the field in the hotels collection that contains the room IDs
+					foreignField: 'rooms', // the field in the rooms collection to match with the IDs
+					as: 'populatedRooms', // the field in which to place the joined documents
+				},
+			},
+			// Unwind the rooms array to process each room
+			{ $unwind: '$populatedRooms' },
+			// Match rooms that can accommodate the requested number of people and within the price range
+			{
+				$match: {
+					'populatedRooms.maxPeople': { $gte: parseInt(numberOfPeople) },
+				},
+			},
+			// Unwind the roomNumbers array to process each room number
+			{ $unwind: '$populatedRooms.roomNumbers' },
+			// Match room numbers that are available for the given date range
+			{
+				$match: {
+					$or: [
+						{ 'populatedRooms.roomNumbers.unavailableDates': { $size: 0 } }, // Room with no unavailable dates
+						{
+							'populatedRooms.roomNumbers.unavailableDates': {
+								$not: {
+									$elemMatch: {
+										startDate: { $lte: endDate },
+										endDate: { $gte: startDate },
+									},
+								},
+							},
+						},
+					],
+				},
+			},
+			// Group the results back by hotel ID
+			{
+				$group: {
+					_id: '$_id',
+					address: { $first: '$address' },
+					cheapestPrice: { $first: '$cheapestPrice' },
+					city: { $first: '$city' },
+					desc: { $first: '$desc' },
+					distance: { $first: '$distance' },
+					featured: { $first: '$featured' },
+					name: { $first: '$name' },
+					photos: { $first: '$photos' },
+					rooms: { $first: '$populatedRooms' },
+					title: { $first: '$title' },
+					type: { $first: '$type' },
+					rating: { $first: '$rating' },
+				},
+			},
+		]).exec();
+
+		return res.status(200).json(hotels);
 	} catch (err) {
 		next(err);
 	}

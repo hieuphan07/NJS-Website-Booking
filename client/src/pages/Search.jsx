@@ -14,12 +14,16 @@ const Search = () => {
 
 	const enteredCity = location.state.city;
 	const enteredDates = location.state.dates;
+	const enteredStartDate = enteredDates[0].startDate;
+	const enteredEndDate = enteredDates[0].endDate;
 	const enteredOptions = location.state.options;
+	const enteredNumberOfPeople =
+		parseInt(enteredOptions.adult) + parseInt(enteredOptions.children);
 	const enteredMin = location.state.min || 0;
 	const enteredMax = location.state.max || 999;
 
 	const { fetchedData: searchingHotels, error } = useFetch(
-		`http://localhost:5500/hotels/search?city=${enteredCity}&date=${enteredDates}&option=${enteredOptions}&min=${enteredMin}&max=${enteredMax}`
+		`http://localhost:5500/hotels/search?city=${enteredCity}&startDate=${enteredStartDate}&endDate=${enteredEndDate}&numberOfPeople=${enteredNumberOfPeople}&minPrice=${enteredMin}&maxPrice=${enteredMax}`
 	);
 
 	return (
