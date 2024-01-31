@@ -78,28 +78,54 @@ exports.searchHotels = async (req, res, next) => {
 			// Match hotels within the price range
 			{
 				$match: {
-					cheapestPrice: { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) },
+					cheapestPrice: {
+						$gte: parseInt(minPrice),
+						$lte: parseInt(maxPrice),
+					},
 				},
 			},
+
 			// Populate the rooms using $lookup
 			{
 				$lookup: {
-					from: 'rooms', // the name of the collection where the room documents are stored
-					localField: 'hotels', // the field in the hotels collection that contains the room IDs
-					foreignField: 'rooms', // the field in the rooms collection to match with the IDs
-					as: 'populatedRooms', // the field in which to place the joined documents
+					from: 'rooms',
+					let: { rid: '$rooms' },
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$in: [
+										'$_id',
+										{
+											$map: {
+												input: '$$rid',
+												in: { $toObjectId: '$$this' },
+											},
+										},
+									],
+								},
+							},
+						},
+					],
+					as: 'populatedRooms',
 				},
 			},
+
 			// Unwind the rooms array to process each room
-			{ $unwind: '$populatedRooms' },
+			{
+				$unwind: '$populatedRooms',
+			},
+
 			// Match rooms that can accommodate the requested number of people and within the price range
 			{
 				$match: {
 					'populatedRooms.maxPeople': { $gte: parseInt(numberOfPeople) },
 				},
 			},
+
 			// Unwind the roomNumbers array to process each room number
 			{ $unwind: '$populatedRooms.roomNumbers' },
+
 			// Match room numbers that are available for the given date range
 			{
 				$match: {
@@ -118,6 +144,7 @@ exports.searchHotels = async (req, res, next) => {
 					],
 				},
 			},
+
 			// Group the results back by hotel ID
 			{
 				$group: {
@@ -130,7 +157,7 @@ exports.searchHotels = async (req, res, next) => {
 					featured: { $first: '$featured' },
 					name: { $first: '$name' },
 					photos: { $first: '$photos' },
-					rooms: { $first: '$populatedRooms' },
+					rooms: { $push: '$populatedRooms' },
 					title: { $first: '$title' },
 					type: { $first: '$type' },
 					rating: { $first: '$rating' },
