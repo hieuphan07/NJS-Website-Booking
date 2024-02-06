@@ -84,7 +84,6 @@ exports.searchHotels = async (req, res, next) => {
 					},
 				},
 			},
-
 			// Populate the rooms using $lookup
 			{
 				$lookup: {
@@ -110,22 +109,18 @@ exports.searchHotels = async (req, res, next) => {
 					as: 'populatedRooms',
 				},
 			},
-
 			// Unwind the rooms array to process each room
 			{
 				$unwind: '$populatedRooms',
 			},
-
 			// Match rooms that can accommodate the requested number of people and within the price range
 			{
 				$match: {
 					'populatedRooms.maxPeople': { $gte: parseInt(numberOfPeople) },
 				},
 			},
-
 			// Unwind the roomNumbers array to process each room number
 			{ $unwind: '$populatedRooms.roomNumbers' },
-
 			// Match room numbers that are available for the given date range
 			{
 				$match: {
@@ -144,7 +139,6 @@ exports.searchHotels = async (req, res, next) => {
 					],
 				},
 			},
-
 			// Group the results back by hotel ID
 			{
 				$group: {
