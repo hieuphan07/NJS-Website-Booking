@@ -5,6 +5,7 @@ export async function action({ request }) {
 	const mode = pathname === '/signup' ? 'signup' : 'login';
 
 	const data = await request.formData();
+	
 	const enteredFirstName = data.get('firstName');
 	const enteredLastName = data.get('lastName');
 	const enteredEmail = data.get('email');

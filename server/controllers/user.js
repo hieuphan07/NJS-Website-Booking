@@ -6,22 +6,22 @@ const {
 	isValidLength,
 } = require('../util/validation');
 const { createJSONToken, verifyEmail } = require('../util/auth');
+const bcrypt = require('bcrypt');
 
 // post create a new user
-exports.createUser = async (req, res, next) => {
-	const fullName = req.body.fullName;
-	const email = req.body.email;
-	const phoneNumber = req.body.phoneNumber;
-	const username = req.body.username;
-	const password = req.body.password;
-	const isAdmin = req.body.isAdmin;
+exports.register = async (req, res, next) => {
+	const { fullName, email, phoneNumber, username, password, isAdmin } =
+		req.body;
+
+	const salt = bcrypt.genSaltSync(10);
+	const hash = bcrypt.hashSync(password, salt);
 
 	const user = {
 		fullName: fullName,
 		email: email,
 		phoneNumber: phoneNumber,
 		username: username,
-		password: password,
+		password: hash,
 		isAdmin: isAdmin,
 	};
 	let errors = {};
@@ -72,8 +72,8 @@ exports.createUser = async (req, res, next) => {
 
 // post login
 exports.login = async (req, res, next) => {
-	const email = req.body.email;
-	const password = req.body.password;
+	const { email, password } = req.body;
+
 	let errors = {};
 	let authToken;
 
@@ -82,7 +82,11 @@ exports.login = async (req, res, next) => {
 		if (emailValid) {
 			const [loggingUser] = await User.find({ email: email });
 			if (loggingUser) {
-				if (password === loggingUser.password) {
+				const isPasswordCorrect = await bcrypt.compare(
+					password,
+					loggingUser.password
+				);
+				if (isPasswordCorrect) {
 					authToken = createJSONToken(loggingUser.email);
 				} else {
 					errors.password = 'Password is incorrect. Try again.';

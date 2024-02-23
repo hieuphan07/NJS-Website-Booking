@@ -14,16 +14,16 @@ const userSchema = new Schema(
 			required: true,
 			unique: true,
 		},
-		password: {
-			type: String,
-			required: true,
-		},
 		fullName: {
 			type: String,
 			required: true,
 		},
 		phoneNumber: {
 			type: Number,
+			required: true,
+		},
+		password: {
+			type: String,
 			required: true,
 		},
 		isAdmin: {
