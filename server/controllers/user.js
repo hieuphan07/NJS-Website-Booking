@@ -10,54 +10,53 @@ const bcrypt = require('bcrypt');
 
 // post create a new user
 exports.register = async (req, res, next) => {
-	const { fullName, email, phoneNumber, username, password, isAdmin } =
-		req.body;
-
-	const salt = bcrypt.genSaltSync(10);
-	const hash = bcrypt.hashSync(password, salt);
-
-	const user = {
-		fullName: fullName,
-		email: email,
-		phoneNumber: phoneNumber,
-		username: username,
-		password: hash,
-		isAdmin: isAdmin,
-	};
-	let errors = {};
-
-	const existUsername = await isExistingText('username', user.username);
-	const existEmail = await isExistingText('email', user.email);
-	const existPhoneNumber = await isExistingPhone(
-		'phoneNumber',
-		user.phoneNumber
-	);
-
-	if (existUsername) {
-		errors.username = 'Username already exits.';
-	}
-	if (existEmail) {
-		errors.email = 'Email already exits.';
-	}
-	if (existPhoneNumber) {
-		errors.phone = 'Phone number already exits.';
-	}
-	if (!isValidEmail(user.email)) {
-		errors.emailValid = 'Invalid email.';
-	}
-	if (!isValidLength(user.password, 8)) {
-		errors.passwordValid =
-			'Invalid password. Must be at least 8 characters long.';
-	}
-
-	if (Object.values(errors).length > 0) {
-		return res.status(422).json({
-			message: 'User signup failed due to validation errors.',
-			errors,
-		});
-	}
-
 	try {
+		const { fullName, email, phoneNumber, username, password, isAdmin } =
+			req.body;
+
+		const salt = bcrypt.genSaltSync(10);
+		const hash = bcrypt.hashSync(password, salt);
+
+		const user = {
+			fullName: fullName,
+			email: email,
+			phoneNumber: phoneNumber,
+			username: username,
+			password: hash,
+			isAdmin: isAdmin,
+		};
+		let errors = {};
+
+		const existUsername = await isExistingText('username', user.username);
+		const existEmail = await isExistingText('email', user.email);
+		const existPhoneNumber = await isExistingPhone(
+			'phoneNumber',
+			user.phoneNumber
+		);
+
+		if (existUsername) {
+			errors.username = 'Username already exits.';
+		}
+		if (existEmail) {
+			errors.email = 'Email already exits.';
+		}
+		if (existPhoneNumber) {
+			errors.phone = 'Phone number already exits.';
+		}
+		if (!isValidEmail(user.email)) {
+			errors.emailValid = 'Invalid email.';
+		}
+		if (!isValidLength(user.password, 8)) {
+			errors.passwordValid =
+				'Invalid password. Must be at least 8 characters long.';
+		}
+
+		if (Object.values(errors).length > 0) {
+			return res.status(422).json({
+				message: 'User signup failed due to validation errors.',
+				errors,
+			});
+		}
 		const newUser = await User.create(user);
 		if (newUser) {
 			const authToken = createJSONToken(newUser.email);
@@ -89,10 +88,10 @@ exports.login = async (req, res, next) => {
 				if (isPasswordCorrect) {
 					authToken = createJSONToken(loggingUser.email);
 				} else {
-					errors.password = 'Password is incorrect. Try again.';
+					errors.password = 'Wrong password or user.';
 				}
 			} else {
-				errors.email = 'User not found.';
+				errors.email = 'Wrong password or user.';
 			}
 		} else {
 			errors.validEmail = 'Email is not valid.';
@@ -104,20 +103,8 @@ exports.login = async (req, res, next) => {
 				errors: errors,
 			});
 		} else {
-			return res.json({ token: authToken });
-		}
-	} catch (err) {
-		next(err);
-	}
-};
-
-// get login
-exports.getUser = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	try {
-		if (token) {
-			const email = verifyEmail(token);
-			return res.json(email);
+			const verifiedUser = verifyEmail(authToken);
+			return res.json({ token: authToken, user: verifiedUser });
 		}
 	} catch (err) {
 		next(err);
