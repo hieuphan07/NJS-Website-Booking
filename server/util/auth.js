@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const KEY = 'supersecret';
 
 function createJSONToken(email) {
-	return jwt.sign({ email }, KEY, { expiresIn: '1' });
+	return jwt.sign({ email }, KEY, { expiresIn: 60 });
 }
 
 function verifyEmail(token) {

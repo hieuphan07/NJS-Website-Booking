@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useRouteLoaderData } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux-store/features/auth/authSlice';
 
@@ -7,9 +7,12 @@ import NavBarItem from './NavBarItem';
 
 import './NavBar.css';
 
-const NavBar = ({ token }) => {
+const NavBar = () => {
+	const data = useRouteLoaderData('root');
+
 	const [authToken, setAuthToken] = useState('');
 	const [loginEmail, setLoginEmail] = useState('');
+
 	const dispatch = useDispatch();
 	const logoutHandler = () => {
 		dispatch(logout());
@@ -17,20 +20,9 @@ const NavBar = ({ token }) => {
 	};
 
 	useEffect(() => {
-		setAuthToken(token);
-		const fetchUser = async () => {
-			const response = await fetch('http://localhost:5500/login', {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			const user = await response.json();
-			return setLoginEmail(user.email);
-		};
-		if (token) {
-			fetchUser();
-		}
-	}, [token]);
+		if (data.fetchedToken) setAuthToken(data.fetchedToken);
+		if (data.fetchedUser) setLoginEmail(data.fetchedUser);
+	}, [data.fetchedToken, data.fetchedUser]);
 
 	return (
 		<div className='nav-bar'>

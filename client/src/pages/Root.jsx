@@ -1,13 +1,12 @@
 import React from 'react';
-import { Outlet, useRouteLoaderData } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import NavBar from '../components/navbar/NavBar';
 
 const RootLayout = () => {
-	const { fetchedToken } = useRouteLoaderData('root');
 	return (
 		<div>
-			<NavBar token={fetchedToken} />
+			<NavBar />
 			<main>
 				<Outlet />
 			</main>
@@ -18,19 +17,24 @@ const RootLayout = () => {
 export default RootLayout;
 
 export async function loader() {
-	let fetchedToken, fetchedHotels;
+	let fetchedToken, fetchedUser, fetchedExpiration, fetchedHotels;
 	try {
-		const [token, hotelsResponse] = await Promise.all([
+		const [token, user, expiration, hotelsResponse] = await Promise.all([
 			localStorage.getItem('token'),
+			localStorage.getItem('loginedUser'),
+			localStorage.getItem('expiration'),
 			fetch('http://localhost:5500/hotels'),
 		]);
 		fetchedToken = token;
+		fetchedUser = user;
+		fetchedExpiration = expiration;
+
 		if (!hotelsResponse.ok) {
 			throw new Error(`${hotelsResponse.status} ${hotelsResponse.statusText}`);
 		} else {
 			fetchedHotels = await hotelsResponse.json();
 		}
-		return { fetchedToken, fetchedHotels };
+		return { fetchedToken, fetchedUser, fetchedExpiration, fetchedHotels };
 	} catch (err) {
 		throw new Error(err);
 	}

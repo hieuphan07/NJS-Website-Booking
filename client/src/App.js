@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import RootLayout, { loader as coupleLoader } from './pages/Root';
+import RootLayout, { loader as initialsLoader } from './pages/Root';
 import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Search from './pages/Search';
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
 		errorElement: <Error />,
 		element: <RootLayout />,
 		id: 'root',
-		loader: coupleLoader,
+		loader: initialsLoader,
 		children: [
 			{ index: true, element: <Home /> },
 			{ path: 'search', element: <Search /> },
