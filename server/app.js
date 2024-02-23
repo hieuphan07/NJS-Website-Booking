@@ -19,15 +19,25 @@ const hotelRoutes = require('./routes/hotel');
 const roomRoutes = require('./routes/room');
 const transactionRoutes = require('./routes/transaction');
 
-app.get('/', (req, res, next) => {
-	res.send('Hello Node JS');
-});
-
 // use routes
 app.use(userRoutes);
 app.use('/hotels', hotelRoutes);
 app.use('/rooms', roomRoutes);
 app.use('/transactions', transactionRoutes);
+
+// middleware handle error
+app.use((err, req, res, next) => {
+	const errorStatus = err.status || 500;
+	const errorMessage = err.message || 'Something went wrong!';
+	return res
+		.status(errorStatus)
+		.json({
+			success: false,
+			status: errorStatus,
+			message: errorMessage,
+			stack: err.stack,
+		});
+});
 
 mongoose
 	.connect(

@@ -6,6 +6,12 @@ const hotelController = require('../controllers/hotel');
 const roomController = require('../controllers/room');
 
 // routes
+router.post('/', hotelController.createHotel);
+
+router.put('/:id', hotelController.updateHotel);
+
+router.delete('/:id', hotelController.deleteHotel);
+
 router.get('/', hotelController.getHotels);
 
 router.get('/countByCity', hotelController.countByCity);
