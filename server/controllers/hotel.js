@@ -161,9 +161,17 @@ exports.searchHotels = async (req, res, next) => {
 			},
 			{
 				$project: {
-					name: 1,
-					city: 1,
+					address: 1,
 					cheapestPrice: 1,
+					city: 1,
+					desc: 1,
+					distance: 1,
+					featured: 1,
+					name: 1,
+					photos: 1,
+					title: 1,
+					type: 1,
+					rating: 1,
 					hotelRooms: {
 						$filter: {
 							input: '$hotelRooms',
