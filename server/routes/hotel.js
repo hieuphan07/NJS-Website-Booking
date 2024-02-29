@@ -3,7 +3,6 @@ const router = express.Router();
 
 // import controller
 const hotelController = require('../controllers/hotel');
-const roomController = require('../controllers/room');
 
 // routes
 router.post('/', hotelController.createHotel);

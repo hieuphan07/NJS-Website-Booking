@@ -103,20 +103,34 @@ exports.getHotelById = async (req, res, next) => {
 
 //  get search hotels
 exports.searchHotels = async (req, res, next) => {
-	const { city, startDate, endDate, numberOfPeople, minPrice, maxPrice } =
-		req.query;
+	const {
+		city,
+		startDate,
+		endDate,
+		numberOfPeople,
+		numberOfRoom,
+		minPrice,
+		maxPrice,
+	} = req.query;
 	console.log(city, startDate, endDate, numberOfPeople, minPrice, maxPrice);
 
 	try {
+		const parsedStartDate = new Date(startDate);
+		const parsedEndDate = new Date(endDate);
+		const parsedMinPrice = parseInt(minPrice, 10);
+		const parsedMaxPrice = parseInt(maxPrice, 10);
+		const parsedNumberOfPeople = parseInt(numberOfPeople, 10);
+		const parsedNumberOfRoom = parseInt(numberOfRoom, 10);
+
 		const hotels = await Hotel.aggregate([
 			// Match hotels in the specified city
-			{ $match: { city: new RegExp(`^${city}$`, 'i') } },
+			{ $match: { city: new RegExp(`^${city}$`, 'i') } }, // regardless of lower or upper case letter
 			// Match hotels within the price range
 			{
 				$match: {
 					cheapestPrice: {
-						$gte: parseInt(minPrice),
-						$lte: parseInt(maxPrice),
+						$gte: parsedMinPrice,
+						$lte: parsedMaxPrice,
 					},
 				},
 			},
@@ -142,58 +156,60 @@ exports.searchHotels = async (req, res, next) => {
 							},
 						},
 					],
-					as: 'populatedRooms',
+					as: 'hotelRooms',
 				},
 			},
-			// Unwind the rooms array to process each room
 			{
-				$unwind: '$populatedRooms',
-			},
-			// Match rooms that can accommodate the requested number of people and within the price range
-			{
-				$match: {
-					'populatedRooms.maxPeople': { $gte: parseInt(numberOfPeople) },
-				},
-			},
-			// Unwind the roomNumbers array to process each room number
-			{ $unwind: '$populatedRooms.roomNumbers' },
-			// Match room numbers that are available for the given date range
-			{
-				$match: {
-					$or: [
-						{ 'populatedRooms.roomNumbers.unavailableDates': { $size: 0 } }, // Room with no unavailable dates
-						{
-							'populatedRooms.roomNumbers.unavailableDates': {
-								$not: {
-									$elemMatch: {
-										startDate: { $lte: endDate },
-										endDate: { $gte: startDate },
+				$project: {
+					name: 1,
+					city: 1,
+					cheapestPrice: 1,
+					hotelRooms: {
+						$filter: {
+							input: '$hotelRooms',
+							as: 'room',
+							cond: {
+								$and: [
+									{ $gte: ['$$room.price', parsedMinPrice] },
+									{ $lte: ['$$room.price', parsedMaxPrice] },
+									{
+										$not: {
+											$anyElementTrue: {
+												$map: {
+													input: '$$room.roomNumbers',
+													as: 'roomNumber',
+													in: {
+														$setIsSubset: [
+															[
+																{ $literal: parsedStartDate },
+																{ $literal: parsedEndDate },
+															],
+															'$$roomNumber.unavailableDates',
+														],
+													},
+												},
+											},
+										},
 									},
-								},
+								],
 							},
 						},
-					],
+					},
 				},
 			},
-			// Group the results back by hotel ID
 			{
-				$group: {
-					_id: '$_id',
-					address: { $first: '$address' },
-					cheapestPrice: { $first: '$cheapestPrice' },
-					city: { $first: '$city' },
-					desc: { $first: '$desc' },
-					distance: { $first: '$distance' },
-					featured: { $first: '$featured' },
-					name: { $first: '$name' },
-					photos: { $first: '$photos' },
-					rooms: { $push: '$populatedRooms' },
-					title: { $first: '$title' },
-					type: { $first: '$type' },
-					rating: { $first: '$rating' },
+				$addFields: {
+					totalAvailableRooms: { $size: '$hotelRooms' },
+					totalMaxPeople: { $sum: '$hotelRooms.maxPeople' },
 				},
 			},
-		]).exec();
+			{
+				$match: {
+					totalAvailableRooms: { $gte: parsedNumberOfRoom },
+					totalMaxPeople: { $gte: parsedNumberOfPeople },
+				},
+			},
+		]);
 
 		return res.status(200).json(hotels);
 	} catch (err) {

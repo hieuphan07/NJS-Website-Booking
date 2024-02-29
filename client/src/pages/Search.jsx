@@ -19,11 +19,12 @@ const Search = () => {
 	const enteredOptions = location.state.options;
 	const enteredNumberOfPeople =
 		parseInt(enteredOptions.adult) + parseInt(enteredOptions.children);
+	const enteredNumberOfRoom = enteredOptions.room;
 	const enteredMin = location.state.min || 0;
 	const enteredMax = location.state.max || 999;
 
 	const { fetchedData: searchingHotels, error } = useFetch(
-		`http://localhost:5500/hotels/search?city=${enteredCity}&startDate=${enteredStartDate}&endDate=${enteredEndDate}&numberOfPeople=${enteredNumberOfPeople}&minPrice=${enteredMin}&maxPrice=${enteredMax}`
+		`http://localhost:5500/hotels/search?city=${enteredCity}&startDate=${enteredStartDate}&endDate=${enteredEndDate}&numberOfPeople=${enteredNumberOfPeople}&numberOfRoom=${enteredNumberOfRoom}&minPrice=${enteredMin}&maxPrice=${enteredMax}`
 	);
 
 	return (
