@@ -156,65 +156,7 @@ exports.searchHotels = async (req, res, next) => {
 							},
 						},
 					],
-					as: 'hotelRooms',
-				},
-			},
-			{
-				$project: {
-					address: 1,
-					cheapestPrice: 1,
-					city: 1,
-					desc: 1,
-					distance: 1,
-					featured: 1,
-					name: 1,
-					photos: 1,
-					title: 1,
-					type: 1,
-					rating: 1,
-					hotelRooms: {
-						$filter: {
-							input: '$hotelRooms',
-							as: 'room',
-							cond: {
-								$and: [
-									{ $gte: ['$$room.price', parsedMinPrice] },
-									{ $lte: ['$$room.price', parsedMaxPrice] },
-									{
-										$not: {
-											$anyElementTrue: {
-												$map: {
-													input: '$$room.roomNumbers',
-													as: 'roomNumber',
-													in: {
-														$setIsSubset: [
-															[
-																{ $literal: parsedStartDate },
-																{ $literal: parsedEndDate },
-															],
-															'$$roomNumber.unavailableDates',
-														],
-													},
-												},
-											},
-										},
-									},
-								],
-							},
-						},
-					},
-				},
-			},
-			{
-				$addFields: {
-					totalAvailableRooms: { $size: '$hotelRooms' },
-					totalMaxPeople: { $sum: '$hotelRooms.maxPeople' },
-				},
-			},
-			{
-				$match: {
-					totalAvailableRooms: { $gte: parsedNumberOfRoom },
-					totalMaxPeople: { $gte: parsedNumberOfPeople },
+					as: 'populatedRooms',
 				},
 			},
 		]);
