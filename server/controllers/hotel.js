@@ -156,7 +156,7 @@ exports.searchHotels = async (req, res, next) => {
 							},
 						},
 					],
-					as: 'populatedRooms',
+					as: 'populatedRooms'
 				},
 			},
 		]);

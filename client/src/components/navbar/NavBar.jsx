@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux-store/features/auth/authSlice';
@@ -9,20 +9,34 @@ import './NavBar.css';
 
 const NavBar = () => {
 	const data = useRouteLoaderData('root');
+	const {
+		fetchedToken: token,
+		fetchedUser: user,
+		fetchedExpiration: expiration,
+	} = data;
 
 	const [authToken, setAuthToken] = useState('');
 	const [loginEmail, setLoginEmail] = useState('');
 
 	const dispatch = useDispatch();
-	const logoutHandler = () => {
+	const logoutHandler = useCallback(() => {
 		dispatch(logout());
 		setAuthToken('');
-	};
+		setLoginEmail('');
+	}, [dispatch]);
 
 	useEffect(() => {
-		if (data.fetchedToken) setAuthToken(data.fetchedToken);
-		if (data.fetchedUser) setLoginEmail(data.fetchedUser);
-	}, [data.fetchedToken, data.fetchedUser]);
+		if (!token) return;
+
+		setAuthToken(token);
+		setLoginEmail(user);
+
+		const duration = expiration * 1000 - new Date().getTime();
+
+		setTimeout(() => {
+			logoutHandler();
+		}, duration);
+	}, [expiration, logoutHandler, token, user]);
 
 	return (
 		<div className='nav-bar'>
