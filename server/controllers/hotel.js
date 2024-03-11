@@ -156,7 +156,37 @@ exports.searchHotels = async (req, res, next) => {
 							},
 						},
 					],
-					as: 'populatedRooms'
+					as: 'populatedRooms',
+				},
+			},
+			{
+				$project: {
+					name: 1,
+					address: 1,
+					cheapestPrice: 1,
+					city: 1,
+					desc: 1,
+					distance: 1,
+					featured: 1,
+					photos: 1,
+					rooms: 1,
+					title: 1,
+					type: 1,
+					rating: 1,
+					populatedRooms: {
+						$filter: {
+							input: '$populatedRooms',
+							as: 'populatedRoom',
+							cond: {
+								$gte: ['$$populatedRoom.maxPeople', parsedNumberOfPeople],
+							},
+						},
+					},
+				},
+			},
+			{
+				$match: {
+					$expr: { $gt: [{ $size: '$populatedRooms' }, 0] },
 				},
 			},
 		]);
