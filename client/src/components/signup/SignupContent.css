@@ -1,0 +1,47 @@
+.signup-container {
+	max-width: 1024px;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	margin: 0 auto;
+	margin-top: 100px;
+}
+
+.signup-container h1 {
+	margin: 0 auto;
+}
+
+.signup-container form {
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.signup-container form .row-1,
+.signup-container form .row-2,
+.signup-container form .row-3 {
+	display: flex;
+	gap: 20px;
+}
+
+.signup-container form input {
+	padding: 10px;
+	width: 200px;
+}
+
+.signup-container form button {
+	padding: 10px;
+	background-color: lightskyblue;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: 700;
+}
+
+.error-message {
+	color: red;
+}
+.error-message li {
+	list-style: none;
+}
