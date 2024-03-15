@@ -115,8 +115,8 @@ exports.searchHotels = async (req, res, next) => {
 	console.log(city, startDate, endDate, numberOfPeople, minPrice, maxPrice);
 
 	try {
-		const parsedStartDate = new Date(startDate);
-		const parsedEndDate = new Date(endDate);
+		const parsedStartDate = parseInt(startDate);
+		const parsedEndDate = parseInt(endDate);
 		const parsedMinPrice = parseInt(minPrice, 10);
 		const parsedMaxPrice = parseInt(maxPrice, 10);
 		const parsedNumberOfPeople = parseInt(numberOfPeople, 10);
@@ -159,34 +159,53 @@ exports.searchHotels = async (req, res, next) => {
 					as: 'populatedRooms',
 				},
 			},
+			// Unwind populatedRooms
 			{
-				$project: {
-					name: 1,
-					address: 1,
-					cheapestPrice: 1,
-					city: 1,
-					desc: 1,
-					distance: 1,
-					featured: 1,
-					photos: 1,
-					rooms: 1,
-					title: 1,
-					type: 1,
-					rating: 1,
-					populatedRooms: {
-						$filter: {
-							input: '$populatedRooms',
-							as: 'populatedRoom',
-							cond: {
-								$gte: ['$$populatedRoom.maxPeople', parsedNumberOfPeople],
-							},
-						},
-					},
+				$unwind: '$populatedRooms',
+			},
+			// Unwind roomNumbers
+			{
+				$unwind: '$populatedRooms.roomNumbers',
+			},
+			// Unwind unavailableDates
+			{
+				$unwind: {
+					path: '$populatedRooms.roomNumbers.unavailableDates',
+					preserveNullAndEmptyArrays: true,
 				},
 			},
 			{
 				$match: {
-					$expr: { $gt: [{ $size: '$populatedRooms' }, 0] },
+					$or: [
+						{
+							'populatedRooms.roomNumbers.unavailableDates.startDate': {
+								$gte: parsedEndDate,
+							},
+						},
+						{
+							'populatedRooms.roomNumbers.unavailableDates.endDate': {
+								$lte: parsedStartDate,
+							},
+						},
+					],
+				},
+			},
+			// Match room numbers that are available for the given date range
+			{
+				$group: {
+					_id: '$_id',
+					address: { $first: '$address' },
+					cheapestPrice: { $first: '$cheapestPrice' },
+					city: { $first: '$city' },
+					desc: { $first: '$desc' },
+					distance: { $first: '$distance' },
+					featured: { $first: '$featured' },
+					name: { $first: '$name' },
+					photos: { $first: '$photos' },
+					rooms: { $push: '$populatedRooms' },
+					title: { $first: '$title' },
+					type: { $first: '$type' },
+					rating: { $first: '$rating' },
 				},
 			},
 		]);
