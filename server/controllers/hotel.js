@@ -167,30 +167,29 @@ exports.searchHotels = async (req, res, next) => {
 			{
 				$unwind: '$populatedRooms.roomNumbers',
 			},
-			// Unwind unavailableDates
-			{
-				$unwind: {
-					path: '$populatedRooms.roomNumbers.unavailableDates',
-					preserveNullAndEmptyArrays: true,
-				},
-			},
+			// Filter unavailable dates
 			{
 				$match: {
 					$or: [
 						{
-							'populatedRooms.roomNumbers.unavailableDates.startDate': {
-								$gte: parsedEndDate,
-							},
+							'populatedRooms.roomNumbers.unavailableDates': { $size: 0 },
 						},
 						{
-							'populatedRooms.roomNumbers.unavailableDates.endDate': {
-								$lte: parsedStartDate,
-							},
+							$nor: [
+								{
+									'populatedRooms.roomNumbers.unavailableDates.startDate':
+										parsedStartDate,
+								},
+								{
+									'populatedRooms.roomNumbers.unavailableDates.endDate':
+										parsedEndDate,
+								},
+							],
 						},
 					],
 				},
 			},
-			// Match room numbers that are available for the given date range
+			// Group after unwinding
 			{
 				$group: {
 					_id: '$_id',
@@ -202,7 +201,11 @@ exports.searchHotels = async (req, res, next) => {
 					featured: { $first: '$featured' },
 					name: { $first: '$name' },
 					photos: { $first: '$photos' },
-					rooms: { $push: '$populatedRooms' },
+					rooms: {
+						$push: {
+							roomNumber: '$populatedRooms.roomNumbers',
+						},
+					},
 					title: { $first: '$title' },
 					type: { $first: '$type' },
 					rating: { $first: '$rating' },
