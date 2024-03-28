@@ -115,8 +115,8 @@ exports.searchHotels = async (req, res, next) => {
 	console.log(city, startDate, endDate, numberOfPeople, minPrice, maxPrice);
 
 	try {
-		const parsedStartDate = new Date(startDate);
-		const parsedEndDate = new Date(endDate);
+		const parsedStartDate = parseInt(startDate);
+		const parsedEndDate = parseInt(endDate);
 		const parsedMinPrice = parseInt(minPrice, 10);
 		const parsedMaxPrice = parseInt(maxPrice, 10);
 		const parsedNumberOfPeople = parseInt(numberOfPeople, 10);
@@ -159,34 +159,71 @@ exports.searchHotels = async (req, res, next) => {
 					as: 'populatedRooms',
 				},
 			},
+			// Unwind populatedRooms
 			{
-				$project: {
-					name: 1,
-					address: 1,
-					cheapestPrice: 1,
-					city: 1,
-					desc: 1,
-					distance: 1,
-					featured: 1,
-					photos: 1,
-					rooms: 1,
-					title: 1,
-					type: 1,
-					rating: 1,
-					populatedRooms: {
-						$filter: {
-							input: '$populatedRooms',
-							as: 'populatedRoom',
-							cond: {
-								$gte: ['$$populatedRoom.maxPeople', parsedNumberOfPeople],
-							},
-						},
-					},
-				},
+				$unwind: '$populatedRooms',
 			},
+			// Unwind roomNumbers
+			{
+				$unwind: '$populatedRooms.roomNumbers',
+			},
+			// Filter unavailable dates
 			{
 				$match: {
-					$expr: { $gt: [{ $size: '$populatedRooms' }, 0] },
+					$or: [
+						{
+							'populatedRooms.roomNumbers.unavailableDates': { $size: 0 },
+						},
+						{
+							$nor: [
+								{
+									'populatedRooms.roomNumbers.unavailableDates.startDate':
+										parsedStartDate,
+								},
+								{
+									'populatedRooms.roomNumbers.unavailableDates.endDate':
+										parsedEndDate,
+								},
+							],
+						},
+					],
+				},
+			},
+			// Group after unwinding
+			{
+				$group: {
+					_id: '$_id',
+					address: { $first: '$address' },
+					cheapestPrice: { $first: '$cheapestPrice' },
+					city: { $first: '$city' },
+					desc: { $first: '$desc' },
+					distance: { $first: '$distance' },
+					featured: { $first: '$featured' },
+					name: { $first: '$name' },
+					photos: { $first: '$photos' },
+					rooms: {
+						$push: {
+							roomNumber: '$populatedRooms.roomNumbers',
+							maxPeople: '$populatedRooms.maxPeople',
+						},
+					},
+					title: { $first: '$title' },
+					type: { $first: '$type' },
+					rating: { $first: '$rating' },
+					totalMaxPeople: { $sum: '$populatedRooms.maxPeople' },
+					totalRoom: { $sum: 1 },
+				},
+			},
+			// Match input number of people
+			{
+				$match: {
+					totalMaxPeople: { $gte: parsedNumberOfPeople },
+				},
+			},
+			// Match input number of room
+			{
+				$match: {
+					totalRoom: { $gte: parsedNumberOfRoom },
 				},
 			},
 		]);
