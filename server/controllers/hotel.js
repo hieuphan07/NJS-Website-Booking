@@ -204,11 +204,26 @@ exports.searchHotels = async (req, res, next) => {
 					rooms: {
 						$push: {
 							roomNumber: '$populatedRooms.roomNumbers',
+							maxPeople: '$populatedRooms.maxPeople',
 						},
 					},
 					title: { $first: '$title' },
 					type: { $first: '$type' },
 					rating: { $first: '$rating' },
+					totalMaxPeople: { $sum: '$populatedRooms.maxPeople' },
+					totalRoom: { $sum: 1 },
+				},
+			},
+			// Match input number of people
+			{
+				$match: {
+					totalMaxPeople: { $gte: parsedNumberOfPeople },
+				},
+			},
+			// Match input number of room
+			{
+				$match: {
+					totalRoom: { $gte: parsedNumberOfRoom },
 				},
 			},
 		]);
