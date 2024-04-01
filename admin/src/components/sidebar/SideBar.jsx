@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -13,7 +14,9 @@ const SideBar = () => {
 		<div className='sidebar'>
 			{/* Logo Admin Page */}
 			<div className='top'>
-				<span className='logo'>Admin Page</span>
+				<Link to='/' style={{ textDecoration: 'none' }}>
+					<span className='logo'>Admin Page</span>
+				</Link>
 			</div>
 			<hr />
 			{/* List */}
@@ -22,23 +25,31 @@ const SideBar = () => {
 					{/* MAIN */}
 					<p className='title'>MAIN</p>
 					<li>
-						<DashboardIcon className='icon' />
-						<span>Dashboard</span>
+						<Link to='/' style={{ textDecoration: 'none' }}>
+							<DashboardIcon className='icon' />
+							<span>Dashboard</span>
+						</Link>
 					</li>
 
 					{/* LISTS */}
 					<p className='title'>LISTS</p>
 					<li>
-						<PersonOutlineIcon className='icon' />
-						<span>Users</span>
+						<Link to='users' style={{ textDecoration: 'none' }}>
+							<PersonOutlineIcon className='icon' />
+							<span>Users</span>
+						</Link>
 					</li>
 					<li>
-						<StoreIcon className='icon' />
-						<span>Hotels</span>
+						<Link to='hotels' style={{ textDecoration: 'none' }}>
+							<StoreIcon className='icon' />
+							<span>Hotels</span>
+						</Link>
 					</li>
 					<li>
-						<CreditCardIcon className='icon' />
-						<span>Rooms</span>
+						<Link to='rooms' style={{ textDecoration: 'none' }}>
+							<CreditCardIcon className='icon' />
+							<span>Rooms</span>
+						</Link>
 					</li>
 					<li>
 						<LocalShippingIcon className='icon' />

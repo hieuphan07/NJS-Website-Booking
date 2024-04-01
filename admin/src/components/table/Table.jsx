@@ -11,23 +11,48 @@ const Table = () => {
 		{
 			field: 'id',
 			headerName: 'ID',
-			width: 150,
+			width: 200,
+			sortable: false,
 		},
-		{ field: 'user', headerName: 'User', width: 200 },
-		{ field: 'hotel', headerName: 'Hotel', width: 300 },
-		{ field: 'room', headerName: 'Room', type: 'number', width: 160 },
+		{ field: 'user', headerName: 'User', width: 50, sortable: false },
+		{
+			field: 'hotel',
+			headerName: 'Hotel',
+			width: 250,
+			sortable: false,
+		},
+		{
+			field: 'room',
+			headerName: 'Room',
+			type: 'number',
+			width: 160,
+			sortable: false,
+		},
 		{
 			field: 'date',
 			headerName: 'Date',
-			width: 180,
+			width: 110,
 			valueGetter: (value, row) => `${row.startDate} - ${row.endDate}`,
+			sortable: false,
 		},
-		{ field: 'price', headerName: 'Price', type: 'number', width: 90 },
-		{ field: 'payment', headerName: 'Payment Method', width: 150 },
+		{
+			field: 'price',
+			headerName: 'Price',
+			type: 'number',
+			width: 90,
+			sortable: false,
+		},
+		{
+			field: 'payment',
+			headerName: 'Payment Method',
+			width: 150,
+			sortable: false,
+		},
 		{
 			field: 'status',
 			headerName: 'Status',
 			width: 90,
+			sortable: false,
 			cellClassName: (params) => {
 				switch (params.value) {
 					case 'Booked':
@@ -76,28 +101,26 @@ const Table = () => {
 		<div className='table'>
 			<Box
 				sx={{
-					height: 300,
+					height: 450,
 					width: '100%',
 					'& .checkIn': {
-						backgroundColor: 'rgba(157, 255, 118, 0.49)',
-						color: '#1a3e72',
-						fontWeight: '600',
+						backgroundColor: 'var(--light-green)',
+						color: '#333',
 					},
 					'& .checkOut': {
-						backgroundColor: '#b299e6',
-						color: '#1a3e72',
-						fontWeight: '600',
+						backgroundColor: 'var(--light-purple)',
+						color: '#333',
 					},
 					'& .booked': {
-						backgroundColor: '#d47483',
-						color: '#1a3e72',
-						fontWeight: '600',
+						backgroundColor: 'var(--light-red)',
+						color: '#fff',
 					},
 				}}
 			>
 				<DataGrid
 					rows={rows}
 					columns={columns}
+					getRowHeight={() => 'auto'}
 					initialState={{
 						pagination: {
 							paginationModel: { proom: 0, proomSize: 8 },
