@@ -1,6 +1,9 @@
 :root {
 	--purple: #6439ff;
 	--light-grey: rgb(230, 227, 227);
+	--light-green: rgba(157, 255, 118, 0.49);
+	--light-purple: #b299e6;
+	--light-red: #d47483;
 }
 
 * {
