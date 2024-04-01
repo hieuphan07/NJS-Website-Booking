@@ -1,4 +1,5 @@
 import React from 'react';
+
 import InfoBoard from '../../infoboard/InfoBoard';
 import Table from '../../table/Table';
 
@@ -19,3 +20,9 @@ const Home = () => {
 };
 
 export default Home;
+
+export async function loader() {
+	const response = await fetch('http://localhost:5500/transactions/');
+	if (!response.ok) return;
+	return response;
+}
