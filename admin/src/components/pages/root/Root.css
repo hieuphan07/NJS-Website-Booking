@@ -1,0 +1,11 @@
+.rootLayout {
+	display: grid;
+	width: 100%;
+	grid-template-columns: 200px 1fr;
+}
+
+main hr {
+	margin-top: 50px;
+	height: 0;
+	border: 0.5px solid var(--light-grey);
+}
