@@ -14,7 +14,11 @@ const Home = () => {
 				<InfoBoard type='earning' />
 				<InfoBoard type='balance' />
 			</div>
+			<div className="listContainer">
+				<div className="listTitle">Lastest Transaction
+				</div>
 			<Table />
+			</div>
 		</div>
 	);
 };
