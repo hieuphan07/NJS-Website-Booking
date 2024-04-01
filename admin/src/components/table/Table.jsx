@@ -81,7 +81,11 @@ const Table = () => {
 				id: row._id,
 				hotel: row.hotelId.name,
 				user: row.user.fullName,
-				room: row.rooms.flatMap((room) => room.roomNumbers),
+				room: row.rooms.map((room) => {
+					return room.roomNumbers.map((roomNumber) => {
+						return ' ' + roomNumber;
+					});
+				}),
 				startDate: new Intl.DateTimeFormat('en-GB', optionDate).format(
 					new Date(row.startDate)
 				),
