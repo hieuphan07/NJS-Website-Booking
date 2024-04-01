@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './components/pages/root/Root';
-import Home from './components/pages/Home';
+import Home from './components/pages/home/Home';
+
+import { loader as transactionLoader } from './components/pages/home/Home.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -10,6 +12,7 @@ const router = createBrowserRouter([
 			{
 				index: true,
 				element: <Home />,
+				loader: transactionLoader,
 			},
 		],
 	},
