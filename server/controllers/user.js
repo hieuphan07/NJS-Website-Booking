@@ -110,3 +110,13 @@ exports.login = async (req, res, next) => {
 		next(err);
 	}
 };
+
+// get users
+exports.getUsers = async (req, res, next) => {
+	try {
+		const users = await User.find();
+		return res.status(200).json(users);
+	} catch (err) {
+		next(err);
+	}
+};
