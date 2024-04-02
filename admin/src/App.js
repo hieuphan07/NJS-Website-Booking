@@ -1,9 +1,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './components/pages/root/Root';
 import Home from './components/pages/home/Home';
-import Users from './components/pages/user/Users';
-import Hotels from './components/pages/hotel/Hotels';
-import Rooms from './components/pages/room/Rooms';
+import Users, { loader as usersLoader } from './components/pages/user/Users';
+import Hotels, {
+	loader as hotelsLoader,
+} from './components/pages/hotel/Hotels';
+import Rooms, { loader as roomsLoader } from './components/pages/room/Rooms';
+
+import {
+	userColumns,
+	hotelColumns,
+	roomColumns,
+} from './components/style/datatablesource.js';
 
 import { loader as transactionLoader } from './components/pages/home/Home.jsx';
 
@@ -19,15 +27,18 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/users',
-				element: <Users />,
+				element: <Users columns={userColumns} />,
+				loader: usersLoader,
 			},
 			{
 				path: '/hotels',
-				element: <Hotels />,
+				element: <Hotels columns={hotelColumns} />,
+				loader: hotelsLoader,
 			},
 			{
 				path: '/rooms',
-				element: <Rooms />,
+				element: <Rooms columns={roomColumns} />,
+				loader: roomsLoader,
 			},
 		],
 	},
