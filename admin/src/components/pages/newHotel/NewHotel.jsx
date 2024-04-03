@@ -9,6 +9,7 @@ const NewHotel = () => {
 	];
 	return (
 		<div className='hotelForm'>
+			<div className='title'>Add New Product</div>
 			<form>
 				<div className='top'>
 					<div className='left'>
