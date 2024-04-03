@@ -1,0 +1,51 @@
+.hotelForm {
+	-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+	box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+	padding: 20px;
+	margin: 20px;
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.top {
+		display: flex;
+		justify-content: space-around;
+		gap: 150px;
+		padding: 0 30px;
+
+		.left,
+		.right {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			input {
+				width: 100%;
+				padding: 10px 5px;
+				outline: none;
+				border: none;
+				border-bottom: 1px solid #333;
+			}
+		}
+	}
+
+	.center,
+	.bottom {
+		display: flex;
+		flex-direction: column;
+		padding: 0 30px;
+		gap: 10px;
+
+		.btn {
+			width: 150px;
+			padding: 5px 10px;
+			margin-top: 30px;
+			background-color: #496449;
+			color: #fff;
+		}
+	}
+}
