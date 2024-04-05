@@ -18,6 +18,8 @@ const NewRoom = () => {
 		},
 	});
 
+	console.log(errors);
+
 	const onSubmit = (data) => {
 		console.log(data);
 	};
