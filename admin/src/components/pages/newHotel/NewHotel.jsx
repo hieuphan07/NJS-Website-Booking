@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import './NewHotel.css';
@@ -9,31 +9,37 @@ const NewHotel = () => {
 		{ label: 'No', value: false },
 	];
 
+	const [imageUrls, setImageUrls] = useState([]);
+
+	const handleFileUpload = async (e) => {
+		const fileList = Array.from(e.target.files);
+		const urls = fileList.map((file) => URL.createObjectURL(file));
+		setImageUrls(urls);
+	};
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			name: '',
-			city: '',
-			distance: '',
-			description: '',
+			name: 'Four Points By Sheraton Da Nang',
+			city: 'Da Nang',
+			distance: '700',
+			description: 'An amazing hotel',
 			images: [],
-			type: '',
-			address: '',
-			title: '',
-			price: '',
+			type: 'hotel',
+			address: 'Vo Nguyen Giap Street',
+			title: 'Four Points By Sheraton Da Nang',
+			price: '150',
 			featured: true,
 			rooms: [],
 		},
 	});
 
 	const onSubmit = (data) => {
-		console.log(data);
+		console.log({ ...data, images: imageUrls });
 	};
-
-	console.log(errors);
 
 	return (
 		<div className='hotelForm'>
@@ -84,9 +90,11 @@ const NewHotel = () => {
 						{/* Images */}
 						<label htmlFor='images'>Images</label>
 						<input
-							type='text'
 							style={{ border: '1px solid #333' }}
+							type='file'
+							multiple
 							{...register('images')}
+							onChange={handleFileUpload}
 						/>
 					</div>
 					<div className='right'>

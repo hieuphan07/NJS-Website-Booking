@@ -13,6 +13,7 @@ import {
 } from './components/style/datatablesource.js';
 import { loader as transactionLoader } from './components/pages/home/Home.jsx';
 import NewHotel from './components/pages/newHotel/NewHotel.jsx';
+import NewRoom from './components/pages/newRoom/NewRoom.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
 						element: <Rooms columns={roomColumns} />,
 						loader: roomsLoader,
 					},
+					{ path: 'new', element: <NewRoom /> },
 				],
 			},
 		],
