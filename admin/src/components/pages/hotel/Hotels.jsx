@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useRouteLoaderData } from 'react-router-dom';
 import DataTable from '../../datatable/DataTable';
 
 import './Hotels.css';
 
 const Hotels = ({ columns }) => {
-	const data = useLoaderData();
+	const {hotelsData} = useRouteLoaderData('root');
 	const [list, setList] = useState([]);
 
 	useEffect(() => {
 		let dataRow = [];
-		data.forEach((row) => {
+		hotelsData.forEach((row) => {
 			dataRow.push({
 				_id: row._id,
 				name: row.name,
@@ -20,7 +20,7 @@ const Hotels = ({ columns }) => {
 			});
 		});
 		setList(dataRow);
-	}, [data]);
+	}, [hotelsData]);
 	return (
 		<div>
 			<DataTable columns={columns} list={list} />
@@ -29,9 +29,3 @@ const Hotels = ({ columns }) => {
 };
 
 export default Hotels;
-
-export async function loader() {
-	const response = await fetch('http://localhost:5500/hotels');
-	if (!response.ok) console.log('Something went wrong!');
-	return response;
-}

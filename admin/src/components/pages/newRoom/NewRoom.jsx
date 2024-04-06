@@ -1,9 +1,12 @@
 import React from 'react';
+import { useRouteLoaderData } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import './NewRoom.css';
 
 const NewRoom = () => {
+	const { hotelsData } = useRouteLoaderData('root');
+
 	const {
 		register,
 		handleSubmit,
@@ -18,8 +21,6 @@ const NewRoom = () => {
 		},
 	});
 
-	console.log(errors);
-
 	const onSubmit = (data) => {
 		const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
 			return {
@@ -27,7 +28,7 @@ const NewRoom = () => {
 				unavailableDates: [],
 			};
 		});
-		console.log(roomNumbersArr);
+
 		console.log('data', { ...data, roomNumbers: roomNumbersArr });
 	};
 
@@ -99,9 +100,9 @@ const NewRoom = () => {
 					<div className='inputContainer'>
 						<label htmlFor='hotel'>Choose a hotel</label>
 						<select id='hotel'>
-							<option value='hotel 1'>Hotel 1</option>
-							<option value='hotel 2'>Hotel 2</option>
-							<option value='hotel 3'>Hotel 3</option>
+							{hotelsData.map((hotel) => (
+								<option key={hotel._id}>{hotel.name}</option>
+							))}
 						</select>
 					</div>
 					{/* Action button */}

@@ -1,11 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Root from './components/pages/root/Root';
+import Root, { loader as propertyLoader } from './components/pages/root/Root';
 import Home from './components/pages/home/Home';
 import Users, { loader as usersLoader } from './components/pages/user/Users';
-import Hotels, {
-	loader as hotelsLoader,
-} from './components/pages/hotel/Hotels';
-import Rooms, { loader as roomsLoader } from './components/pages/room/Rooms';
+import Hotels from './components/pages/hotel/Hotels';
+import Rooms from './components/pages/room/Rooms';
 import {
 	userColumns,
 	hotelColumns,
@@ -19,6 +17,8 @@ const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Root />,
+		id: 'root',
+		loader: propertyLoader,
 		children: [
 			{
 				index: true,
@@ -41,7 +41,6 @@ const router = createBrowserRouter([
 					{
 						index: true,
 						element: <Hotels columns={hotelColumns} />,
-						loader: hotelsLoader,
 					},
 					{ path: 'new', element: <NewHotel /> },
 				],
@@ -52,7 +51,6 @@ const router = createBrowserRouter([
 					{
 						index: true,
 						element: <Rooms columns={roomColumns} />,
-						loader: roomsLoader,
 					},
 					{ path: 'new', element: <NewRoom /> },
 				],
