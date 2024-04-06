@@ -10,10 +10,10 @@ const NewRoom = () => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			title: '',
-			price: '',
-			description: '',
-			maxPeople: '',
+			title: 'One King Bed',
+			price: '100',
+			desc: 'Free parking',
+			maxPeople: '2',
 			roomNumbers: [],
 		},
 	});
@@ -21,10 +21,15 @@ const NewRoom = () => {
 	console.log(errors);
 
 	const onSubmit = (data) => {
-		console.log(data);
+		const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
+			return {
+				number: parseInt(roomNumber.trim()),
+				unavailableDates: [],
+			};
+		});
+		console.log(roomNumbersArr);
+		console.log('data', { ...data, roomNumbers: roomNumbersArr });
 	};
-
-	console.log(errors);
 
 	return (
 		<div className='newRoom'>
@@ -58,11 +63,11 @@ const NewRoom = () => {
 					</div>
 					{/* Description */}
 					<div className='inputContainer'>
-						<label htmlFor='description'>Description</label>
+						<label htmlFor='desc'>Description</label>
 						<input
-							id='description'
+							id='desc'
 							type='text'
-							{...register('description', {
+							{...register('desc', {
 								required: 'Please enter description',
 							})}
 						/>
