@@ -21,18 +21,26 @@ export default Root;
 export async function loader() {
 	const hotelsFetcher = () => fetch('http://localhost:5500/hotels');
 	const roomsFetcher = () => fetch('http://localhost:5500/rooms');
+	const transactionFetcher = () => fetch('http://localhost:5500/transactions');
 
 	try {
-		const [hotelsRes, roomsRes] = await Promise.all([
+		const [hotelsRes, roomsRes, transactionsRes] = await Promise.all([
 			hotelsFetcher(),
 			roomsFetcher(),
+			transactionFetcher(),
 		]);
 		if (!hotelsRes.ok)
 			console.log('Something went wrong! Failed to fetch hotels');
 		if (!roomsRes.ok)
 			console.log('Something went wrong! Failed to fetch rooms');
+		if (!transactionsRes.ok)
+			console.log('Something went wrong! Failed to fetch transactions');
 
-		return { hotelsData: await hotelsRes.json(), roomsData: await roomsRes.json() };
+		return {
+			hotelsData: await hotelsRes.json(),
+			roomsData: await roomsRes.json(),
+			transactionsData: await transactionsRes.json(),
+		};
 	} catch (err) {
 		console.log(err);
 	}
