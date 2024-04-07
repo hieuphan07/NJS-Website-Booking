@@ -47,5 +47,7 @@ export async function action({ request }) {
 	localStorage.setItem('loginedUser', user.email);
 	localStorage.setItem('expiration', user.exp);
 
+	if (mode === 'signup') alert('Successfully registered.');
+
 	return redirect(mode === 'signup' ? '/login' : '/');
 }
