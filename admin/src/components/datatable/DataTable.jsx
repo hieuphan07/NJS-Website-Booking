@@ -1,12 +1,13 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import './DataTable.css';
 
 const DataTable = ({ columns, list }) => {
 	const location = useLocation();
 	const path = location.pathname.split('/')[1];
+	const navigate = useNavigate();
 
 	// Delete data handle
 	const handleDelete = async (id) => {
@@ -15,6 +16,7 @@ const DataTable = ({ columns, list }) => {
 				method: 'DELETE',
 			});
 			console.log('Successfully deleted !!!');
+			navigate(`/${path}`);
 		} catch (err) {
 			console.log(err);
 		}
