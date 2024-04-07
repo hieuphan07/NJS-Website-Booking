@@ -10,21 +10,21 @@ const columns = [
 	{
 		field: 'id',
 		headerName: 'ID',
-		width: 200,
+		width: 230,
 		sortable: false,
 	},
 	{ field: 'user', headerName: 'User', width: 200, sortable: false },
 	{
 		field: 'hotel',
 		headerName: 'Hotel',
-		width: 250,
+		width: 300,
 		sortable: false,
 	},
 	{
 		field: 'room',
 		headerName: 'Room',
 		type: 'number',
-		width: 200,
+		width: 230,
 		sortable: false,
 		headerAlign: 'left',
 		align: 'left',
@@ -32,7 +32,7 @@ const columns = [
 	{
 		field: 'date',
 		headerName: 'Date',
-		width: 200,
+		width: 230,
 		valueGetter: (value, row) => `${row.startDate} - ${row.endDate}`,
 		sortable: false,
 	},
@@ -113,8 +113,10 @@ const Table = () => {
 		<div className='table'>
 			<Box
 				sx={{
-					height: 450,
-					width: '100%',
+					'& .booked': {
+						backgroundColor: 'var(--light-red)',
+						color: '#fff',
+					},
 					'& .checkIn': {
 						backgroundColor: 'var(--light-green)',
 						color: '#333',
@@ -122,10 +124,6 @@ const Table = () => {
 					'& .checkOut': {
 						backgroundColor: 'var(--light-purple)',
 						color: '#333',
-					},
-					'& .booked': {
-						backgroundColor: 'var(--light-red)',
-						color: '#fff',
 					},
 				}}
 			>

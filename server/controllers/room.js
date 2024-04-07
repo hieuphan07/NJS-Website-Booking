@@ -19,3 +19,14 @@ exports.getRoom = async (req, res, next) => {
 		next(err);
 	}
 };
+
+// delete room
+exports.deleteRoom = async (req, res, next) => {
+	const roomId = req.params.id;
+	try {
+		await Room.findByIdAndDelete(roomId);
+		res.status(200).json('Room has been deleted.');
+	} catch (err) {
+		next(err);
+	}
+};

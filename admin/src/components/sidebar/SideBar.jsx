@@ -52,8 +52,10 @@ const SideBar = () => {
 						</Link>
 					</li>
 					<li>
-						<LocalShippingIcon className='icon' />
-						<span>Transaction</span>
+						<Link to='transactions' style={{ textDecoration: 'none' }}>
+							<LocalShippingIcon className='icon' />
+							<span>Transaction</span>
+						</Link>
 					</li>
 					<p className='title'>NEW</p>
 					<li>

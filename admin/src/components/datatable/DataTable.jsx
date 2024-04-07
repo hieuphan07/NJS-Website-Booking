@@ -9,7 +9,16 @@ const DataTable = ({ columns, list }) => {
 	const path = location.pathname.split('/')[1];
 
 	// Delete data handle
-	const handleDelete = async () => {};
+	const handleDelete = async (id) => {
+		try {
+			await fetch(`http://localhost:5500/${path}/${id}`, {
+				method: 'DELETE',
+			});
+			console.log('Successfully deleted !!!');
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	const actionColumn = [
 		{
@@ -51,6 +60,7 @@ const DataTable = ({ columns, list }) => {
 				rowsPerPageOptions={[9]}
 				checkboxSelection
 				getRowId={(row) => row._id}
+				disableRowSelectionOnClick
 			/>
 		</div>
 	);
