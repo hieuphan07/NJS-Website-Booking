@@ -7,6 +7,10 @@ const transactionSchema = new Schema({
 		type: Object,
 		required: true,
 	},
+	contact: {
+		type: Object,
+		required: true,
+	},
 	hotelId: {
 		type: Schema.Types.ObjectId,
 		ref: 'Hotel',

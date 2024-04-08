@@ -113,7 +113,6 @@ exports.searchHotels = async (req, res, next) => {
 		minPrice,
 		maxPrice,
 	} = req.query;
-	console.log(city, startDate, endDate, numberOfPeople, minPrice, maxPrice);
 
 	try {
 		const parsedStartDate = parseInt(startDate);

@@ -8,6 +8,8 @@ import { DateRange } from 'react-date-range';
 import './Reserve.css';
 
 const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
+	const loginedUser = localStorage.getItem('loginedUser');
+
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dates = useSelector(selectDates);
@@ -49,7 +51,8 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const [totalBill, setTotalBill] = useState(0);
 
 	const [transaction, setTransaction] = useState({
-		user: { fullName: '', email: '', phoneNumber: '', identityNumber: '' },
+		user: loginedUser || '',
+		contact: { fullName: '', email: '', phoneNumber: '', identityNumber: '' },
 		hotelId: hotelId,
 		rooms: [],
 		startDate: dates[0].startDate,
@@ -124,10 +127,10 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 	const [isValid, setIsValid] = useState(false);
 	useEffect(() => {
 		if (
-			transaction.user.fullName !== '' &&
-			transaction.user.email !== '' &&
-			transaction.user.phoneNumber !== '' &&
-			transaction.user.identityNumber !== '' &&
+			transaction.contact.fullName !== '' &&
+			transaction.contact.email !== '' &&
+			transaction.contact.phoneNumber !== '' &&
+			transaction.contact.identityNumber !== '' &&
 			transaction.price !== 0 &&
 			transaction.payment !== '' &&
 			transaction.payment !== 'Select Payment Method'
@@ -137,12 +140,12 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 			setIsValid(false);
 		}
 	}, [
-		transaction.payment,
+		transaction.contact.fullName,
+		transaction.contact.email,
+		transaction.contact.phoneNumber,
+		transaction.contact.identityNumber,
 		transaction.price,
-		transaction.user.email,
-		transaction.user.fullName,
-		transaction.user.identityNumber,
-		transaction.user.phoneNumber,
+		transaction.payment,
 	]);
 
 	// Modify the DateRange onChange handler to filter rooms based on the selected date
@@ -227,7 +230,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 							setTransaction((prev) => {
 								return {
 									...prev,
-									user: { ...prev.user, fullName: e.target.value },
+									contact: { ...prev.contact, fullName: e.target.value },
 								};
 							})
 						}
@@ -243,7 +246,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 							setTransaction((prev) => {
 								return {
 									...prev,
-									user: { ...prev.user, email: e.target.value },
+									contact: { ...prev.contact, email: e.target.value },
 								};
 							})
 						}
@@ -259,7 +262,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 							setTransaction((prev) => {
 								return {
 									...prev,
-									user: { ...prev.user, phoneNumber: e.target.value },
+									contact: { ...prev.contact, phoneNumber: e.target.value },
 								};
 							})
 						}
@@ -275,7 +278,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 							setTransaction((prev) => {
 								return {
 									...prev,
-									user: { ...prev.user, identityNumber: e.target.value },
+									contact: { ...prev.contact, identityNumber: e.target.value },
 								};
 							})
 						}

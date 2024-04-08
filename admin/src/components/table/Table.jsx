@@ -88,7 +88,7 @@ const Table = () => {
 			dataRows.push({
 				id: row._id,
 				hotel: row.hotelId.name,
-				user: row.user.fullName,
+				user: row.user,
 				room: row.rooms.map((room) => {
 					return room.roomNumbers.map((roomNumber) => {
 						return ' ' + roomNumber;

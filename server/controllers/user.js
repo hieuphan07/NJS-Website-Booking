@@ -7,6 +7,7 @@ const {
 } = require('../util/validation');
 const { createJSONToken, verifyEmail } = require('../util/auth');
 const bcrypt = require('bcrypt');
+const loggedInUser = require('../util/userData');
 
 // post create a new user
 exports.register = async (req, res, next) => {
@@ -104,6 +105,7 @@ exports.login = async (req, res, next) => {
 			});
 		} else {
 			const verifiedUser = verifyEmail(authToken);
+			loggedInUser.user = verifiedUser;
 			return res.json({ token: authToken, user: verifiedUser });
 		}
 	} catch (err) {
