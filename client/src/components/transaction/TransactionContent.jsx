@@ -1,12 +1,14 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
 import { format } from 'date-fns';
 
 import './TransactionContent.css';
 
 const TransactionContent = () => {
-	const { fetchedData: transactions, error } = useFetch(
-		'http://localhost:5500/transactions'
+	const user = useParams().id;
+	const { fetchedData: transactions } = useFetch(
+		`http://localhost:5500/transactions/${user}`
 	);
 
 	return (

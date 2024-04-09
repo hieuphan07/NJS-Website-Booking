@@ -17,6 +17,7 @@ const LoginContent = () => {
 						type='text'
 						placeholder='Enter your email'
 						required
+						defaultValue='test01@test.com'
 					/>
 				</label>
 				<label>
@@ -26,6 +27,7 @@ const LoginContent = () => {
 						type='password'
 						placeholder='Enter your password'
 						required
+						defaultValue='Phathahi1405'
 					/>
 				</label>
 				{data && data.errors && (

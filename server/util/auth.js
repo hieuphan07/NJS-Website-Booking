@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const KEY = 'supersecret';
 
-function createJSONToken(email) {
-	return jwt.sign({ email }, KEY, { expiresIn: '1h' });
+function createJSONToken(email, isAdmin) {
+	return jwt.sign({ email, isAdmin }, KEY, { expiresIn: '1h' });
 }
 
 function verifyEmail(token) {

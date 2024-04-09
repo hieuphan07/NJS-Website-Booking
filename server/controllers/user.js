@@ -8,6 +8,7 @@ const {
 const { createJSONToken, verifyEmail } = require('../util/auth');
 const bcrypt = require('bcrypt');
 const loggedInUser = require('../util/userData');
+const jwt = require('jsonwebtoken');
 
 // post create a new user
 exports.register = async (req, res, next) => {
@@ -58,13 +59,8 @@ exports.register = async (req, res, next) => {
 				errors,
 			});
 		}
-		const newUser = await User.create(user);
-		if (newUser) {
-			const authToken = createJSONToken(newUser.email);
-			res
-				.status(201)
-				.json({ message: 'User created', user: newUser, token: authToken });
-		}
+		await User.create(user);
+		res.status(200).send('User has been created');
 	} catch (err) {
 		console.log(err);
 	}
@@ -72,31 +68,25 @@ exports.register = async (req, res, next) => {
 
 // post login
 exports.login = async (req, res, next) => {
-	const { email, password } = req.body;
-
-	let errors = {};
-	let authToken;
+	const errors = {};
 
 	try {
-		const emailValid = isValidEmail(email);
-		if (emailValid) {
-			const [loggingUser] = await User.find({ email: email });
-			if (loggingUser) {
-				const isPasswordCorrect = await bcrypt.compare(
-					password,
-					loggingUser.password
-				);
-				if (isPasswordCorrect) {
-					authToken = createJSONToken(loggingUser.email);
-				} else {
-					errors.password = 'Wrong password or user.';
-				}
-			} else {
-				errors.email = 'Wrong password or user.';
-			}
-		} else {
-			errors.validEmail = 'Email is not valid.';
-		}
+		const emailValid = isValidEmail(req.body.email);
+		if (!emailValid) errors.validEmail = 'Email is not valid';
+
+		const user = await User.findOne({ email: req.body.email });
+		if (!user) errors.password = 'Wrong password or user.';
+
+		const isPasswordCorrect = await bcrypt.compare(
+			req.body.password,
+			user.password
+		);
+
+		if (!isPasswordCorrect) errors.password = 'Wrong password or user.';
+
+		const { password, isAdmin, ...otherDetail } = user._doc;
+		const token = createJSONToken(otherDetail.email, isAdmin);
+		const decode = jwt.decode(token);
 
 		if (Object.values(errors).length > 0) {
 			return res.status(422).json({
@@ -104,9 +94,11 @@ exports.login = async (req, res, next) => {
 				errors: errors,
 			});
 		} else {
-			const verifiedUser = verifyEmail(authToken);
-			loggedInUser.user = verifiedUser;
-			return res.json({ token: authToken, user: verifiedUser });
+			return res.send({
+				token: token,
+				expiration: decode.exp,
+				user: { ...otherDetail },
+			});
 		}
 	} catch (err) {
 		next(err);

@@ -41,11 +41,11 @@ export async function action({ request }) {
 	}
 
 	const resData = await response.json();
-	const { token, user } = resData;
+	const { token, expiration, user } = resData;
 
 	localStorage.setItem('token', token);
+	localStorage.setItem('expiration', expiration);
 	localStorage.setItem('loginedUser', user.email);
-	localStorage.setItem('expiration', user.exp);
 
 	if (mode === 'signup') alert('Successfully registered.');
 

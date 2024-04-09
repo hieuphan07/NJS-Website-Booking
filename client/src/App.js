@@ -24,7 +24,7 @@ const router = createBrowserRouter([
 			{ path: 'login', element: <Login />, action: authManipulateAction },
 			{ path: 'signup', element: <Signup />, action: authManipulateAction },
 			{
-				path: 'transaction',
+				path: 'transactions/:id',
 				element: (
 					<ProtectedRoute>
 						<Transaction />

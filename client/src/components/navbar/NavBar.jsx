@@ -32,6 +32,7 @@ const NavBar = () => {
 		setLoginEmail(user);
 
 		const duration = expiration * 1000 - new Date().getTime();
+		console.log(duration);
 
 		setTimeout(() => {
 			logoutHandler();
@@ -58,7 +59,7 @@ const NavBar = () => {
 					<div>
 						<span>{loginEmail}</span>
 						<button className='nav-bar__button'>
-							<Link to='/transaction'>Transactions</Link>
+							<Link to={`/transactions/${loginEmail}`}>Transactions</Link>
 						</button>
 						<button className='nav-bar__button' onClick={logoutHandler}>
 							<Link>Logout</Link>

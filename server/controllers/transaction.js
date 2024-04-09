@@ -1,9 +1,8 @@
 const Transaction = require('../models/transaction');
-const loggedInUser = require('../util/userData');
 
 // get transctions
 exports.getTransactions = async (req, res, next) => {
-	const user = loggedInUser.user.email;
+	const user = req.params.id;
 	try {
 		const transaction = await Transaction.find({ user: user })
 			.populate({ path: 'hotelId' })
