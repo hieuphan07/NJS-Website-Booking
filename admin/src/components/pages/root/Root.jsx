@@ -19,9 +19,17 @@ const Root = () => {
 export default Root;
 
 export async function loader() {
+	const localToken = localStorage.getItem('token');
+	const bearer = 'Bearer ' + localToken;
+
 	const hotelsFetcher = () => fetch('http://localhost:5500/hotels');
 	const roomsFetcher = () => fetch('http://localhost:5500/rooms');
-	const transactionFetcher = () => fetch('http://localhost:5500/transactions');
+	const transactionFetcher = () =>
+		fetch('http://localhost:5500/transactions/', {
+			headers: {
+				Authorization: `${bearer}`,
+			},
+		});
 
 	try {
 		const [hotelsRes, roomsRes, transactionsRes] = await Promise.all([

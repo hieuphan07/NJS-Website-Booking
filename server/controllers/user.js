@@ -5,9 +5,7 @@ const {
 	isValidEmail,
 	isValidLength,
 } = require('../util/validation');
-const { createJSONToken, verifyEmail } = require('../util/auth');
 const bcrypt = require('bcrypt');
-const loggedInUser = require('../util/userData');
 const jwt = require('jsonwebtoken');
 
 // post create a new user
@@ -85,7 +83,9 @@ exports.login = async (req, res, next) => {
 		if (!isPasswordCorrect) errors.password = 'Wrong password or user.';
 
 		const { password, isAdmin, ...otherDetail } = user._doc;
-		const token = createJSONToken(otherDetail.email, isAdmin);
+		const token = jwt.sign({ ...otherDetail.email, isAdmin }, 'supersecret', {
+			expiresIn: '1h',
+		});
 		const decode = jwt.decode(token);
 
 		if (Object.values(errors).length > 0) {

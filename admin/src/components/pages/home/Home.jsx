@@ -25,7 +25,11 @@ const Home = () => {
 export default Home;
 
 export async function loader() {
-	const response = await fetch('http://localhost:5500/transactions/');
+	const response = await fetch('http://localhost:5500/transactions/', {
+		headers: {
+			Authorization: 'Bearer ' + localStorage.getItem('token'),
+		},
+	});
 	if (!response.ok) return;
 	return response;
 }
