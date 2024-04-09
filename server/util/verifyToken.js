@@ -11,11 +11,12 @@ exports.verifyAdmin = async (req, res, next) => {
 
 	jwt.verify(token, 'supersecret', (err, user) => {
 		if (err) {
+			console.log(err);
 			return next(createError(403, 'Token is not valid'));
 		}
 
 		req.user = user;
-		console.log(req.user);
+		console.log(user);
 
 		if (req.user.isAdmin) {
 			next();

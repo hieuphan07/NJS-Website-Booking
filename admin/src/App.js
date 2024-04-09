@@ -9,10 +9,12 @@ import {
 	hotelColumns,
 	roomColumns,
 } from './components/style/datatablesource.js';
-import { loader as transactionLoader } from './components/pages/home/Home.jsx';
 import Transaction from './components/pages/transaction/Transaction.jsx';
 import NewHotel from './components/pages/newHotel/NewHotel.jsx';
 import NewRoom from './components/pages/newRoom/NewRoom.jsx';
+import Login from './components/pages/login/Login.jsx';
+import { action as loginAction } from './components/loginContent/LoginContent.jsx';
+import ProtectedRoute from './components/util/ProtectedRoute.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -23,8 +25,16 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <Home />,
-				loader: transactionLoader,
+				element: (
+					<ProtectedRoute>
+						<Home />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'login',
+				element: <Login />,
+				action: loginAction,
 			},
 			{
 				path: 'users',
