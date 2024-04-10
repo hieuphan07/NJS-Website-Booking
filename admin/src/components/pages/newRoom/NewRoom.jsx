@@ -13,23 +13,36 @@ const NewRoom = () => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			title: 'One King Bed',
-			price: '100',
+			title: '1 King Bed',
+			price: '80',
 			desc: 'Free parking',
 			maxPeople: '2',
 			roomNumbers: [],
 		},
 	});
 
-	const onSubmit = (data) => {
+	console.log(errors);
+
+	const onSubmit = async (data) => {
 		const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
 			return {
 				number: parseInt(roomNumber.trim()),
 				unavailableDates: [],
 			};
 		});
+		const parsedRoom = { ...data, roomNumbers: roomNumbersArr };
 
-		console.log('data', { ...data, roomNumbers: roomNumbersArr });
+		const response = await fetch('http://localhost:5500/rooms', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(parsedRoom),
+		});
+		if (!response.ok)
+			return alert('Something went wrong! Failed to create new room.');
+
+		alert('Successfully created new room!');
 	};
 
 	return (
@@ -93,15 +106,21 @@ const NewRoom = () => {
 						<textarea
 							id='roomNumbers'
 							placeholder='give comma between room numbers.'
-							{...register('roomNumbers')}
+							{...register('roomNumbers', {
+								required: 'Please enter room numbers',
+							})}
 						></textarea>
+						<p className='errors-msg'>{errors.roomNumbers?.message}</p>
 					</div>
 					{/* Hotel */}
 					<div className='inputContainer'>
 						<label htmlFor='hotel'>Choose a hotel</label>
 						<select id='hotel'>
+							<option value='Select hotel'>Select hotel</option>
 							{hotelsData.map((hotel) => (
-								<option key={hotel._id}>{hotel.name}</option>
+								<option key={hotel._id} value={hotel.name}>
+									{hotel.name}
+								</option>
 							))}
 						</select>
 					</div>

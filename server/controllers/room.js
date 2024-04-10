@@ -20,6 +20,12 @@ exports.getRoom = async (req, res, next) => {
 	}
 };
 
+// create room
+exports.createRoom = async (req, res, next) => {
+	console.log(req.body);
+	res.status(200).send('Room has been created.');
+};
+
 // delete room
 exports.deleteRoom = async (req, res, next) => {
 	const roomId = req.params.id;

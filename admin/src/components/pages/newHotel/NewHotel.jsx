@@ -15,14 +15,14 @@ const NewHotel = () => {
 
 	// Find room not contain to any hotel
 	const filteredRooms = roomsData.filter((roomData) => {
-		const hotel = hotelsData.find((hotelData) => {
+		const exsitedHotelContainRoom = hotelsData.find((hotelData) => {
 			const existedRoom = hotelData.rooms.find(
 				(room) => room._id === roomData._id
 			);
 			return existedRoom;
 		});
 
-		if (hotel) {
+		if (exsitedHotelContainRoom) {
 			return false;
 		} else {
 			return true;
@@ -46,12 +46,12 @@ const NewHotel = () => {
 			name: 'Four Points By Sheraton Da Nang',
 			city: 'Da Nang',
 			distance: '700',
-			desc: 'An amazing hotel',
+			desc: 'A 5-star hotel nestled along the picturesque beach in Da Nang City',
 			photos: [],
 			type: 'hotel',
 			address: 'Vo Nguyen Giap Street',
 			title: 'Four Points By Sheraton Da Nang',
-			cheapestPrice: '150',
+			cheapestPrice: '80',
 			featured: true,
 			rooms: [],
 		},
