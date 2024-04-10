@@ -59,7 +59,6 @@ const NewHotel = () => {
 
 	const onSubmit = async (data) => {
 		const newHotel = { ...data, photos: imageUrls };
-		console.log(newHotel);
 
 		const response = await fetch('http://localhost:5500/hotels', {
 			method: 'POST',

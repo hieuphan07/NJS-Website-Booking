@@ -1,11 +1,12 @@
 import React from 'react';
-import { useRouteLoaderData } from 'react-router-dom';
+import { useRouteLoaderData, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import './NewRoom.css';
 
 const NewRoom = () => {
 	const { hotelsData } = useRouteLoaderData('root');
+	const navigate = useNavigate();
 
 	const {
 		register,
@@ -15,7 +16,7 @@ const NewRoom = () => {
 		defaultValues: {
 			title: '1 King Bed',
 			price: '80',
-			desc: 'Free parking',
+			desc: 'Just steps from the beach',
 			maxPeople: '2',
 			roomNumbers: [],
 		},
@@ -43,6 +44,8 @@ const NewRoom = () => {
 			return alert('Something went wrong! Failed to create new room.');
 
 		alert('Successfully created new room!');
+
+		return navigate('/rooms');
 	};
 
 	return (
@@ -115,10 +118,10 @@ const NewRoom = () => {
 					{/* Hotel */}
 					<div className='inputContainer'>
 						<label htmlFor='hotel'>Choose a hotel</label>
-						<select id='hotel'>
+						<select id='hotel' {...register('hotelId')}>
 							<option value='Select hotel'>Select hotel</option>
 							{hotelsData.map((hotel) => (
-								<option key={hotel._id} value={hotel.name}>
+								<option key={hotel._id} value={hotel._id}>
 									{hotel.name}
 								</option>
 							))}

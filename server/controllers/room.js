@@ -1,4 +1,5 @@
 const Room = require('../models/room');
+const Hotel = require('../models/hotel');
 
 // get rooms
 exports.getRooms = async (req, res, next) => {
@@ -22,8 +23,30 @@ exports.getRoom = async (req, res, next) => {
 
 // create room
 exports.createRoom = async (req, res, next) => {
-	console.log(req.body);
-	res.status(200).send('Room has been created.');
+	try {
+		const { hotelId, ...otherRoomDetail } = req.body;
+		console.log(otherRoomDetail);
+		console.log(hotelId);
+
+		const newRoom = new Room({ ...otherRoomDetail });
+		const savedRoom = await newRoom.save();
+
+		if (hotelId === 'Select hotel') {
+			res.status(200).send('Room has been created');
+		} else {
+			try {
+				await Hotel.findByIdAndUpdate(hotelId, {
+					$push: { rooms: savedRoom },
+				});
+				res.status(200).send('Room has been created and added to hotel');
+			} catch (err) {
+				// console.log('Hotel process', err);
+				next(err);
+			}
+		}
+	} catch (err) {
+		next(err);
+	}
 };
 
 // delete room

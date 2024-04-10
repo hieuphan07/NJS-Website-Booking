@@ -13,9 +13,9 @@ exports.createHotel = async (req, res, next) => {
 		const parsedHotel = { ...req.body, rooms: roomObjId };
 		const newHotel = new Hotel(parsedHotel);
 
-		const savedHotel = await newHotel.save();
+		await newHotel.save();
 
-		res.status(200).json(savedHotel);
+		res.status(200).send('Hotel has been created');
 	} catch (err) {
 		console.log(err);
 		next(err);
