@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
 import './NewHotel.css';
 
@@ -8,6 +9,9 @@ const NewHotel = () => {
 		{ label: 'Yes', value: true },
 		{ label: 'No', value: false },
 	];
+
+	const navigate = useNavigate();
+	const { roomsData } = useRouteLoaderData('root');
 
 	const [imageUrls, setImageUrls] = useState([]);
 
@@ -26,19 +30,33 @@ const NewHotel = () => {
 			name: 'Four Points By Sheraton Da Nang',
 			city: 'Da Nang',
 			distance: '700',
-			description: 'An amazing hotel',
-			images: [],
+			desc: 'An amazing hotel',
+			photos: [],
 			type: 'hotel',
 			address: 'Vo Nguyen Giap Street',
 			title: 'Four Points By Sheraton Da Nang',
-			price: '150',
+			cheapestPrice: '150',
 			featured: true,
 			rooms: [],
 		},
 	});
 
-	const onSubmit = (data) => {
-		console.log({ ...data, images: imageUrls });
+	const onSubmit = async (data) => {
+		const newHotel = { ...data, photos: imageUrls };
+		console.log(newHotel);
+
+		const response = await fetch('http://localhost:5500/hotels', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(newHotel),
+		});
+		if (!response.ok)
+			alert('Something went wrong! Failed to create new hotel.');
+
+		alert('Successfully created new hotel!');
+		return navigate('/hotels');
 	};
 
 	return (
@@ -77,23 +95,23 @@ const NewHotel = () => {
 						/>
 						<p className='errors-msg'>{errors.distance?.message}</p>
 						{/* Description */}
-						<label htmlFor='description'>Description</label>
+						<label htmlFor='desc'>Description</label>
 						<input
-							id='description'
+							id='desc'
 							type='text'
 							placeholder='Description'
-							{...register('description', {
+							{...register('desc', {
 								required: 'Please enter description',
 							})}
 						/>
 						<p className='errors-msg'>{errors.description?.message}</p>
 						{/* Images */}
-						<label htmlFor='images'>Images</label>
+						<label htmlFor='photos'>Images</label>
 						<input
 							style={{ border: '1px solid #333' }}
 							type='file'
 							multiple
-							{...register('images')}
+							{...register('photos')}
 							onChange={handleFileUpload}
 						/>
 					</div>
@@ -126,12 +144,12 @@ const NewHotel = () => {
 						/>
 						<p className='errors-msg'>{errors.title?.message}</p>
 						{/* Price */}
-						<label htmlFor='price'>Price</label>
+						<label htmlFor='cheapestPrice'>Price</label>
 						<input
-							id='price'
+							id='cheapestPrice'
 							type='number'
 							placeholder='Price'
-							{...register('price', { required: 'Please enter price' })}
+							{...register('cheapestPrice', { required: 'Please enter price' })}
 						/>
 						<p className='errors-msg'>{errors.price?.message}</p>
 						{/* Featured */}
@@ -149,9 +167,11 @@ const NewHotel = () => {
 					{/* Rooms */}
 					<label htmlFor='rooms'>Rooms</label>
 					<select id='rooms' multiple {...register('rooms')}>
-						<option value='Room 1'>Room 1</option>
-						<option value='Room 2'>Room 2</option>
-						<option value='Room 3'>Room 3</option>
+						{roomsData?.map((room) => (
+							<option key={room._id} value={room._id}>
+								{room.title}
+							</option>
+						))}
 					</select>
 				</div>
 				<div className='bottom'>

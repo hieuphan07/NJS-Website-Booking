@@ -2,14 +2,22 @@ const Hotel = require('../models/hotel');
 const Room = require('../models/room');
 const Transaction = require('../models/transaction');
 const { createError } = require('../util/error');
+const mongoose = require('mongoose');
 
 // create
 exports.createHotel = async (req, res, next) => {
-	const newHotel = new Hotel(req.body);
 	try {
+		const roomObjId = req.body.rooms.map(
+			(room) => new mongoose.Types.ObjectId(room)
+		);
+		const parsedHotel = { ...req.body, rooms: roomObjId };
+		const newHotel = new Hotel(parsedHotel);
+
 		const savedHotel = await newHotel.save();
+
 		res.status(200).json(savedHotel);
 	} catch (err) {
+		console.log(err);
 		next(err);
 	}
 };
