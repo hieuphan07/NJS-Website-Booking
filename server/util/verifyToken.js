@@ -3,7 +3,6 @@ const { createError } = require('../util/error');
 
 exports.verifyAdmin = async (req, res, next) => {
 	const token = req.headers.authorization?.split(' ')[1];
-	console.log(token);
 
 	if (!token) {
 		return next(createError(401, 'You are not authenticated!'));
@@ -16,8 +15,6 @@ exports.verifyAdmin = async (req, res, next) => {
 		}
 
 		req.user = user;
-		console.log(user);
-
 		if (req.user.isAdmin) {
 			next();
 		}

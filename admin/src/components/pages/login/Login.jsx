@@ -1,11 +1,10 @@
-import React from 'react'
+import React from 'react';
+import LoginContent from '../../loginContent/LoginContent';
 
-import './Login.css'
+import './Login.css';
 
 const Login = () => {
-  return (
-    <div>Login</div>
-  )
-}
+	return <LoginContent />;
+};
 
-export default Login
+export default Login;

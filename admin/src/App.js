@@ -32,16 +32,15 @@ const router = createBrowserRouter([
 				),
 			},
 			{
-				path: 'login',
-				element: <Login />,
-				action: loginAction,
-			},
-			{
 				path: 'users',
 				children: [
 					{
 						index: true,
-						element: <Users columns={userColumns} />,
+						element: (
+							<ProtectedRoute>
+								<Users columns={userColumns} />
+							</ProtectedRoute>
+						),
 						loader: usersLoader,
 					},
 				],
@@ -51,9 +50,20 @@ const router = createBrowserRouter([
 				children: [
 					{
 						index: true,
-						element: <Hotels columns={hotelColumns} />,
+						element: (
+							<ProtectedRoute>
+								<Hotels columns={hotelColumns} />
+							</ProtectedRoute>
+						),
 					},
-					{ path: 'new', element: <NewHotel /> },
+					{
+						path: 'new',
+						element: (
+							<ProtectedRoute>
+								<NewHotel />
+							</ProtectedRoute>
+						),
+					},
 				],
 			},
 			{
@@ -61,13 +71,36 @@ const router = createBrowserRouter([
 				children: [
 					{
 						index: true,
-						element: <Rooms columns={roomColumns} />,
+						element: (
+							<ProtectedRoute>
+								<Rooms columns={roomColumns} />
+							</ProtectedRoute>
+						),
 					},
-					{ path: 'new', element: <NewRoom /> },
+					{
+						path: 'new',
+						element: (
+							<ProtectedRoute>
+								<NewRoom />
+							</ProtectedRoute>
+						),
+					},
 				],
 			},
-			{ path: 'transactions', element: <Transaction /> },
+			{
+				path: 'transactions',
+				element: (
+					<ProtectedRoute>
+						<Transaction />
+					</ProtectedRoute>
+				),
+			},
 		],
+	},
+	{
+		path: 'login',
+		element: <Login />,
+		action: loginAction,
 	},
 ]);
 

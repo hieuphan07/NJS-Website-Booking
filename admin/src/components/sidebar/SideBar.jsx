@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -10,6 +10,11 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import './SideBar.css';
 
 const SideBar = () => {
+	const navigate = useNavigate();
+	const logoutHandler = () => {
+		localStorage.clear();
+		navigate('/login');
+	};
 	return (
 		<div className='sidebar'>
 			{/* Logo Admin Page */}
@@ -71,7 +76,7 @@ const SideBar = () => {
 					<p className='title'>USER</p>
 					<li>
 						<ExitToAppIcon className='icon' />
-						<span>Logout</span>
+						<span onClick={logoutHandler}>Logout</span>
 					</li>
 				</ul>
 			</div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import { useRouteLoaderData } from 'react-router-dom';
 
 import './Table.css';
 
@@ -72,15 +71,33 @@ const columns = [
 ];
 
 const Table = () => {
-	const { transactionsData } = useRouteLoaderData('root');
-
 	const [rows, setRows] = useState([]);
 	const [paginationModel] = useState({
 		pageSize: 8,
 		page: 0,
 	});
 
+	const [transactionsData, setTransactionsData] = useState([]);
+
 	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (!token) return;
+
+		const bearer = 'Bearer ' + token;
+		const transactionFetcher = async () => {
+			const response = await fetch('http://localhost:5500/transactions', {
+				headers: { Authorization: bearer },
+			});
+			if (!response.ok)
+				return console.log(
+					'Something went wrong! (Failed to fetch transaction)'
+				);
+			const data = await response.json();
+			return setTransactionsData(data);
+		};
+
+		transactionFetcher();
+
 		let dataRows = [];
 		const optionDate = { year: 'numeric', month: '2-digit', day: '2-digit' };
 		// Create data for table
@@ -137,6 +154,7 @@ const Table = () => {
 							sortModel: [{ field: 'date', sort: 'desc' }],
 						},
 					}}
+					pageSizeOptions={[8]}
 					checkboxSelection
 				/>
 			</Box>
