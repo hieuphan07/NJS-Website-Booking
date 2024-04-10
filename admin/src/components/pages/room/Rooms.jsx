@@ -5,7 +5,8 @@ import DataTable from '../../datatable/DataTable';
 import './Rooms.css';
 
 const Rooms = ({ columns }) => {
-	const {roomsData} = useRouteLoaderData('root');
+	const { roomsData } = useRouteLoaderData('root');
+
 	const [list, setList] = useState([]);
 
 	useEffect(() => {
@@ -19,7 +20,7 @@ const Rooms = ({ columns }) => {
 				maxPeople: row.maxPeople,
 			});
 		});
-		setList(dataRow)
+		setList(dataRow);
 	}, [roomsData]);
 	return (
 		<div>

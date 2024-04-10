@@ -5,7 +5,7 @@ import DataTable from '../../datatable/DataTable';
 import './Hotels.css';
 
 const Hotels = ({ columns }) => {
-	const {hotelsData} = useRouteLoaderData('root');
+	const { hotelsData } = useRouteLoaderData('root');
 	const [list, setList] = useState([]);
 
 	useEffect(() => {

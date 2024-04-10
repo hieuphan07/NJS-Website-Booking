@@ -11,7 +11,23 @@ const NewHotel = () => {
 	];
 
 	const navigate = useNavigate();
-	const { roomsData } = useRouteLoaderData('root');
+	const { hotelsData, roomsData } = useRouteLoaderData('root');
+
+	// Find room not contain to any hotel
+	const filteredRooms = roomsData.filter((roomData) => {
+		const hotel = hotelsData.find((hotelData) => {
+			const existedRoom = hotelData.rooms.find(
+				(room) => room._id === roomData._id
+			);
+			return existedRoom;
+		});
+
+		if (hotel) {
+			return false;
+		} else {
+			return true;
+		}
+	});
 
 	const [imageUrls, setImageUrls] = useState([]);
 
@@ -167,7 +183,7 @@ const NewHotel = () => {
 					{/* Rooms */}
 					<label htmlFor='rooms'>Rooms</label>
 					<select id='rooms' multiple {...register('rooms')}>
-						{roomsData?.map((room) => (
+						{filteredRooms?.map((room) => (
 							<option key={room._id} value={room._id}>
 								{room.title}
 							</option>
