@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -15,6 +15,17 @@ const SideBar = () => {
 		localStorage.clear();
 		navigate('/login');
 	};
+
+	useEffect(() => {
+		const expiration = parseInt(localStorage.getItem('expiration')) * 1000;
+		const now = new Date().getTime();
+		const duration = expiration - now;
+
+		setTimeout(() => {
+			logoutHandler();
+		}, duration);
+	}, []);
+
 	return (
 		<div className='sidebar'>
 			{/* Logo Admin Page */}
