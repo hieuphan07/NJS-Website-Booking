@@ -22,8 +22,6 @@ const NewRoom = () => {
 		},
 	});
 
-	console.log(errors);
-
 	const onSubmit = async (data) => {
 		const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
 			return {
@@ -37,6 +35,7 @@ const NewRoom = () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			},
 			body: JSON.stringify(parsedRoom),
 		});
