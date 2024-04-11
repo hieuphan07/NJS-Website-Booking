@@ -12,11 +12,23 @@ const DataTable = ({ columns, list }) => {
 	// Delete data handle
 	const handleDelete = async (id) => {
 		try {
-			await fetch(`http://localhost:5500/${path}/${id}`, {
-				method: 'DELETE',
-			});
-			console.log('Successfully deleted !!!');
-			navigate(`/${path}`);
+			const deleteConfirmation = window.confirm(
+				'Are you sure to delete this item?'
+			);
+			if (deleteConfirmation) {
+				const response = await fetch(`http://localhost:5500/${path}/${id}`, {
+					method: 'DELETE',
+					headers: {
+						Authorization: 'Bearer ' + localStorage.getItem('token'),
+					},
+				});
+				if (!response.ok)
+					return console.log(
+						'Something went wrong! Failed to fetch delete the item'
+					);
+				console.log('Successfully deleted !!!');
+				navigate(`/${path}`);
+			}
 		} catch (err) {
 			console.log(err);
 		}

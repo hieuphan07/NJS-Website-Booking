@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const { verifyAdmin } = require('../util/verifyToken');
 
 // import controller
 const hotelController = require('../controllers/hotel');
 
 // routes
-router.post('/', hotelController.createHotel);
+router.post('/', verifyAdmin, hotelController.createHotel);
 
-router.put('/:id', hotelController.updateHotel);
+router.put('/:id', verifyAdmin, hotelController.updateHotel);
 
-router.delete('/:id', hotelController.deleteHotel);
+router.delete('/:id', verifyAdmin, hotelController.deleteHotel);
 
 router.get('/', hotelController.getHotels);
 

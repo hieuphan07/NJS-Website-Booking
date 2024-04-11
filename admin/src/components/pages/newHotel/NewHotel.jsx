@@ -64,11 +64,13 @@ const NewHotel = () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			},
 			body: JSON.stringify(newHotel),
 		});
-		if (!response.ok)
-			alert('Something went wrong! Failed to create new hotel.');
+		if (!response.ok) {
+			return alert('Something went wrong! Failed to create new hotel.');
+		}
 
 		alert('Successfully created new hotel!');
 		return navigate('/hotels');
