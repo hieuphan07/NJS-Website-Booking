@@ -32,7 +32,10 @@ const SearchList = ({ searchingHotels, error }) => {
 							/>
 							{/* Hotel detail container */}
 							<div className='search-list__detail'>
-								<h4 className='search-list__name' onClick={goToDetail}>
+								<h4
+									className='search-list__name'
+									onClick={() => goToDetail(curr._id)}
+								>
 									{curr.title}
 								</h4>
 								<p className='search-list__distance'>
