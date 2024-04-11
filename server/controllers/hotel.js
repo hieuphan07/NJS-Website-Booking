@@ -1,5 +1,6 @@
 const Hotel = require('../models/hotel');
 const Room = require('../models/room');
+const transaction = require('../models/transaction');
 const Transaction = require('../models/transaction');
 const { createError } = require('../util/error');
 const mongoose = require('mongoose');
@@ -40,8 +41,22 @@ exports.updateHotel = async (req, res, next) => {
 exports.deleteHotel = async (req, res, next) => {
 	const hotelId = req.params.id;
 	try {
-		await Hotel.findByIdAndDelete(hotelId);
-		res.status(200).json('Hotel has been deleted');
+		// Check hotel is contained to any transactions
+		const transactions = await Transaction.find();
+		const transactionContainHotel = transactions.find(
+			(transaction) => transaction.hotelId.toString() === hotelId.toString()
+		);
+
+		// Delete hotel
+		if (!transactionContainHotel) {
+			await Hotel.findByIdAndDelete(hotelId);
+			return res.status(200).json('Hotel has been deleted');
+		} else {
+			// Send message if hotel can not be deleted
+			return res
+				.status(500)
+				.json({ message: 'Hotel is booked. Can not be deleted!' });
+		}
 	} catch (err) {
 		next(err);
 	}

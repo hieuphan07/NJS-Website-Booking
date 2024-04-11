@@ -15,6 +15,7 @@ const DataTable = ({ columns, list }) => {
 			const deleteConfirmation = window.confirm(
 				'Are you sure to delete this item?'
 			);
+
 			if (deleteConfirmation) {
 				const response = await fetch(`http://localhost:5500/${path}/${id}`, {
 					method: 'DELETE',
@@ -22,10 +23,18 @@ const DataTable = ({ columns, list }) => {
 						Authorization: 'Bearer ' + localStorage.getItem('token'),
 					},
 				});
-				if (!response.ok)
+
+				// Response if try to delete booked hotel
+				if (response.status === 500) {
+					return alert('Can not be deleted. (This hotel is booked)');
+				}
+
+				if (!response.ok) {
 					return console.log(
 						'Something went wrong! Failed to fetch delete the item'
 					);
+				}
+
 				console.log('Successfully deleted !!!');
 				navigate(`/${path}`);
 			}
