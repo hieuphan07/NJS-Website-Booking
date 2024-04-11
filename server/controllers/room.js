@@ -25,8 +25,6 @@ exports.getRoom = async (req, res, next) => {
 exports.createRoom = async (req, res, next) => {
 	try {
 		const { hotelId, ...otherRoomDetail } = req.body;
-		console.log(otherRoomDetail);
-		console.log(hotelId);
 
 		const newRoom = new Room({ ...otherRoomDetail });
 		const savedRoom = await newRoom.save();
@@ -40,7 +38,6 @@ exports.createRoom = async (req, res, next) => {
 				});
 				res.status(200).send('Room has been created and added to hotel');
 			} catch (err) {
-				// console.log('Hotel process', err);
 				next(err);
 			}
 		}
