@@ -54,7 +54,10 @@ const DataTable = ({ columns, list }) => {
 			renderCell: (params) => {
 				return (
 					<div className='cellAction'>
-						<Link to='/users/test' style={{ textDecoration: 'none' }}>
+						<Link
+							to={`${path}/${params.row._id}`}
+							style={{ textDecoration: 'none' }}
+						>
 							<div className='viewButton'>View</div>
 						</Link>
 						<div
@@ -73,14 +76,20 @@ const DataTable = ({ columns, list }) => {
 		<div className='datatable'>
 			<div className='datatableTitle'>
 				{path.toUpperCase()}
-				<Link to={`/${path}/new`} className='link'>
-					Add New
-				</Link>
+				{(path === 'hotels' || path === 'rooms') && (
+					<Link to={`/${path}/new`} className='link'>
+						Add New
+					</Link>
+				)}
 			</div>
 			<DataGrid
 				className='datagrid'
 				rows={list || []}
-				columns={columns.concat(actionColumn)}
+				columns={
+					path === 'hotels' || path === 'rooms'
+						? columns.concat(actionColumn)
+						: columns
+				}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection

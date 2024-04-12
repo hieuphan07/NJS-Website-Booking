@@ -4,6 +4,7 @@ import Home from './components/pages/home/Home';
 import Users, { loader as usersLoader } from './components/pages/user/Users';
 import Hotels from './components/pages/hotel/Hotels';
 import Rooms from './components/pages/room/Rooms';
+import Error from './components/pages/error/Error.jsx';
 import {
 	userColumns,
 	hotelColumns,
@@ -19,6 +20,7 @@ import ProtectedRoute from './components/util/ProtectedRoute.jsx';
 const router = createBrowserRouter([
 	{
 		path: '/',
+		errorElement: <Error />,
 		element: <Root />,
 		id: 'root',
 		loader: propertyLoader,
