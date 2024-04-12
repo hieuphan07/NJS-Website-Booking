@@ -25,8 +25,10 @@ const DataTable = ({ columns, list }) => {
 				});
 
 				// Response if try to delete booked hotel
-				if (response.status === 500) {
-					return alert('Can not be deleted. (This hotel is booked)');
+				if (path === 'hotels') {
+					if (response.status === 500) {
+						return alert('Can not be deleted. (This hotel is booked)');
+					}
 				}
 
 				if (!response.ok) {

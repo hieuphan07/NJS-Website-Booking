@@ -49,7 +49,34 @@ exports.createRoom = async (req, res, next) => {
 // delete room
 exports.deleteRoom = async (req, res, next) => {
 	const roomId = req.params.id;
+
 	try {
+		const hotels = await Hotel.find();
+		// Find hotel contains the deleting room
+		const hotelIndex = hotels.findIndex((hotel) => {
+			const existedIndexRoom = hotel.rooms.findIndex(
+				(room) => room._id.toString() === roomId.toString()
+			);
+			if (existedIndexRoom >= 0) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+
+		// Remove the deleting room from hotel
+		if (hotelIndex >= 0) {
+			try {
+				const hotelId = hotels[hotelIndex]._id;
+				await Hotel.findByIdAndUpdate(hotelId, {
+					$pull: { rooms: roomId },
+				});
+			} catch (err) {
+				next(err);
+			}
+		}
+
+		// Delete room
 		await Room.findByIdAndDelete(roomId);
 		res.status(200).json('Room has been deleted.');
 	} catch (err) {

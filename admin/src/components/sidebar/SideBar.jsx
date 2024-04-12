@@ -75,12 +75,16 @@ const SideBar = () => {
 					</li>
 					<p className='title'>NEW</p>
 					<li>
-						<StoreIcon className='icon' />
-						<span>New Hotel</span>
+						<Link to='hotels/new' style={{ textDecoration: 'none' }}>
+							<StoreIcon className='icon' />
+							<span>New Hotel</span>
+						</Link>
 					</li>
 					<li>
-						<CreditCardIcon className='icon' />
-						<span>New Room</span>
+						<Link to='rooms/new' style={{ textDecoration: 'none' }}>
+							<CreditCardIcon className='icon' />
+							<span>New Room</span>
+						</Link>
 					</li>
 
 					{/* USER */}
