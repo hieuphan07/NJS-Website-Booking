@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useRouteLoaderData } from 'react-router-dom';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate, useRouteLoaderData, useParams } from 'react-router-dom';
 
 import './NewHotel.css';
 
@@ -29,6 +29,8 @@ const NewHotel = () => {
 		}
 	});
 
+	const { hotelId } = useParams();
+
 	const [imageUrls, setImageUrls] = useState([]);
 
 	const handleFileUpload = async (e) => {
@@ -38,42 +40,56 @@ const NewHotel = () => {
 	};
 
 	const {
+		control,
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
-		defaultValues: {
-			name: 'Four Points By Sheraton Da Nang',
-			city: 'Da Nang',
-			distance: '700',
-			desc: 'A 5-star hotel nestled along the picturesque beach in Da Nang City',
-			photos: [],
-			type: 'hotel',
-			address: 'Vo Nguyen Giap Street',
-			title: 'Four Points By Sheraton Da Nang',
-			cheapestPrice: '80',
-			featured: true,
-			rooms: [],
-		},
+		defaultValues: !hotelId
+			? {
+					name: 'Four Point by Sheraton Da Nang',
+					city: 'Da Nang',
+					distance: '700',
+					desc: 'A 5-star hotel nestled along the picturesque beach in Da Nang City',
+					photos: [],
+					type: 'hotel',
+					address: 'Vo Nguyen Giap Street',
+					title: 'Four Points By Sheraton Da Nang',
+					cheapestPrice: '80',
+					featured: true,
+					rooms: [],
+			  }
+			: async () => {
+					const response = await fetch(
+						`http://localhost:5500/hotels/find/${hotelId}`
+					);
+					return await response.json();
+			  },
 	});
 
+	const { fields: photoFields } = useFieldArray({ control, name: 'photos' });
+	const { fields: roomFields } = useFieldArray({ control, name: 'rooms' });
+
+	// Submit handler
 	const onSubmit = async (data) => {
-		const newHotel = { ...data, photos: imageUrls };
+		// const newHotel = { ...data, photos: imageUrls };
 
-		const response = await fetch('http://localhost:5500/hotels', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('token'),
-			},
-			body: JSON.stringify(newHotel),
-		});
-		if (!response.ok) {
-			return alert('Something went wrong! Failed to create new hotel.');
-		}
+		console.log(data);
 
-		alert('Successfully created new hotel!');
-		return navigate('/hotels');
+		// const response = await fetch('http://localhost:5500/hotels', {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 		Authorization: 'Bearer ' + localStorage.getItem('token'),
+		// 	},
+		// 	body: JSON.stringify(newHotel),
+		// });
+		// if (!response.ok) {
+		// 	return alert('Something went wrong! Failed to create new hotel.');
+		// }
+
+		// alert('Successfully created new hotel!');
+		// return navigate('/hotels');
 	};
 
 	return (
@@ -124,13 +140,21 @@ const NewHotel = () => {
 						<p className='errors-msg'>{errors.description?.message}</p>
 						{/* Images */}
 						<label htmlFor='photos'>Images</label>
-						<input
-							style={{ border: '1px solid #333' }}
-							type='file'
-							multiple
-							{...register('photos')}
-							onChange={handleFileUpload}
-						/>
+						{/* For New Hotel: import photo file */}
+						{!hotelId && (
+							<input
+								style={{ border: '1px solid #333' }}
+								type='file'
+								multiple
+								{...register('photos')}
+								onChange={handleFileUpload}
+							/>
+						)}
+						{/* For Existed Hotel: edit url link */}
+						{hotelId &&
+							photoFields.map((field, index) => (
+								<input key={field.id} {...register(`photos.${index}`)} />
+							))}
 					</div>
 					<div className='right'>
 						{/* Type */}
@@ -183,13 +207,21 @@ const NewHotel = () => {
 				<div className='center'>
 					{/* Rooms */}
 					<label htmlFor='rooms'>Rooms</label>
-					<select id='rooms' multiple {...register('rooms')}>
-						{filteredRooms?.map((room) => (
-							<option key={room._id} value={room._id}>
-								{room.title}
-							</option>
+					{/* For New Hotel: select hotel from available room list */}
+					{!hotelId && (
+						<select id='rooms' multiple {...register('rooms')}>
+							{filteredRooms?.map((room) => (
+								<option key={room._id} value={room._id}>
+									{room.title}
+								</option>
+							))}
+						</select>
+					)}
+					{/* For Existed Room: edit */}
+					{hotelId &&
+						roomFields.map((field, index) => (
+							<input key={field.id} {...register(`rooms.${index}.title`)} />
 						))}
-					</select>
 				</div>
 				<div className='bottom'>
 					<button className='btn' type='submit'>

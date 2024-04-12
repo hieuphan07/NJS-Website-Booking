@@ -12,6 +12,7 @@ import {
 } from './components/style/datatablesource.js';
 import Transaction from './components/pages/transaction/Transaction.jsx';
 import NewHotel from './components/pages/newHotel/NewHotel.jsx';
+import HotelDetail from './components/pages/hotelDetail/HotelDetail.jsx';
 import NewRoom from './components/pages/newRoom/NewRoom.jsx';
 import Login from './components/pages/login/Login.jsx';
 import { action as loginAction } from './components/loginContent/LoginContent.jsx';
@@ -51,12 +52,25 @@ const router = createBrowserRouter([
 				path: 'hotels',
 				children: [
 					{
-						index: true,
-						element: (
-							<ProtectedRoute>
-								<Hotels columns={hotelColumns} />
-							</ProtectedRoute>
-						),
+						path: '',
+						children: [
+							{
+								index: true,
+								element: (
+									<ProtectedRoute>
+										<Hotels columns={hotelColumns} />
+									</ProtectedRoute>
+								),
+							},
+							{
+								path: ':hotelId',
+								element: (
+									<ProtectedRoute>
+										<HotelDetail />
+									</ProtectedRoute>
+								),
+							},
+						],
 					},
 					{
 						path: 'new',
