@@ -58,16 +58,20 @@ const NewHotel = () => {
 					cheapestPrice: '80',
 					featured: true,
 					rooms: [],
-			  }
+			  } // Default value for NewHotel page
 			: async () => {
 					const response = await fetch(
 						`http://localhost:5500/hotels/find/${hotelId}`
 					);
 					return await response.json();
-			  },
+			  }, // Fetch hotel data for DetailHotel page
 	});
 
-	const { fields: photoFields } = useFieldArray({ control, name: 'photos' });
+	const {
+		fields: photoFields,
+		append,
+		remove,
+	} = useFieldArray({ control, name: 'photos' });
 	const { fields: roomFields } = useFieldArray({ control, name: 'rooms' });
 
 	// Submit handler
@@ -151,10 +155,38 @@ const NewHotel = () => {
 							/>
 						)}
 						{/* For Existed Hotel: edit url link */}
-						{hotelId &&
-							photoFields.map((field, index) => (
-								<input key={field.id} {...register(`photos.${index}`)} />
-							))}
+						{hotelId && (
+							<ul id='photos'>
+								{photoFields.map((field, index) => {
+									return (
+										<li key={field.id}>
+											<input
+												{...register(`photos.${index}`)}
+												style={{ border: '1px solid #333' }}
+											/>
+											<button
+												type='button'
+												onClick={() => {
+													remove(index);
+												}}
+											>
+												Remove
+											</button>
+										</li>
+									);
+								})}
+							</ul>
+						)}
+						{hotelId && (
+							<button
+								type='button'
+								onClick={() => {
+									append('Add a new image address');
+								}}
+							>
+								Append
+							</button>
+						)}
 					</div>
 					<div className='right'>
 						{/* Type */}
@@ -218,10 +250,16 @@ const NewHotel = () => {
 						</select>
 					)}
 					{/* For Existed Room: edit */}
-					{hotelId &&
-						roomFields.map((field, index) => (
-							<input key={field.id} {...register(`rooms.${index}.title`)} />
-						))}
+					<ul id='room'>
+						{hotelId &&
+							roomFields.map((field, index) => {
+								return (
+									<li key={field.id}>
+										<input {...register(`rooms.${index}.title`)} />
+									</li>
+								);
+							})}
+					</ul>
 				</div>
 				<div className='bottom'>
 					<button className='btn' type='submit'>
