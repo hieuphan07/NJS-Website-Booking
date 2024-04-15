@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate, useRouteLoaderData, useParams } from 'react-router-dom';
 
@@ -31,14 +31,7 @@ const NewHotel = () => {
 
 	const { hotelId } = useParams();
 
-	const [imageUrls, setImageUrls] = useState([]);
-
-	const handleFileUpload = async (e) => {
-		const fileList = Array.from(e.target.files);
-		const urls = fileList.map((file) => URL.createObjectURL(file));
-		setImageUrls(urls);
-	};
-
+	// Register fields for input form
 	const {
 		control,
 		register,
@@ -51,7 +44,7 @@ const NewHotel = () => {
 					city: 'Da Nang',
 					distance: '700',
 					desc: 'A 5-star hotel nestled along the picturesque beach in Da Nang City',
-					photos: [],
+					photos: ['https://'],
 					type: 'hotel',
 					address: 'Vo Nguyen Giap Street',
 					title: 'Four Points By Sheraton Da Nang',
@@ -76,24 +69,20 @@ const NewHotel = () => {
 
 	// Submit handler
 	const onSubmit = async (data) => {
-		// const newHotel = { ...data, photos: imageUrls };
+		const response = await fetch('http://localhost:5500/hotels', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			},
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			return alert('Something went wrong! Failed to create new hotel.');
+		}
 
-		console.log(data);
-
-		// const response = await fetch('http://localhost:5500/hotels', {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		Authorization: 'Bearer ' + localStorage.getItem('token'),
-		// 	},
-		// 	body: JSON.stringify(newHotel),
-		// });
-		// if (!response.ok) {
-		// 	return alert('Something went wrong! Failed to create new hotel.');
-		// }
-
-		// alert('Successfully created new hotel!');
-		// return navigate('/hotels');
+		alert('Successfully created new hotel!');
+		return navigate('/hotels');
 	};
 
 	return (
@@ -144,49 +133,41 @@ const NewHotel = () => {
 						<p className='errors-msg'>{errors.description?.message}</p>
 						{/* Images */}
 						<label htmlFor='photos'>Images</label>
-						{/* For New Hotel: import photo file */}
-						{!hotelId && (
-							<input
-								style={{ border: '1px solid #333' }}
-								type='file'
-								multiple
-								{...register('photos')}
-								onChange={handleFileUpload}
-							/>
-						)}
-						{/* For Existed Hotel: edit url link */}
-						{hotelId && (
-							<ul id='photos'>
-								{photoFields.map((field, index) => {
-									return (
-										<li key={field.id}>
-											<input
-												{...register(`photos.${index}`)}
-												style={{ border: '1px solid #333' }}
-											/>
-											<button
-												type='button'
-												onClick={() => {
+						<ul id='photos'>
+							{photoFields.map((field, index) => {
+								return (
+									<li key={field.id}>
+										<input
+											{...register(`photos.${index}`)}
+											style={{ border: '1px solid #333' }}
+										/>
+										<button
+											className='rm-btn'
+											type='button'
+											onClick={() => {
+												const isConfirmed = window.confirm(
+													'Are you sure to delete this item?'
+												);
+												if (isConfirmed) {
 													remove(index);
-												}}
-											>
-												Remove
-											</button>
-										</li>
-									);
-								})}
-							</ul>
-						)}
-						{hotelId && (
-							<button
-								type='button'
-								onClick={() => {
-									append('Add a new image address');
-								}}
-							>
-								Append
-							</button>
-						)}
+												}
+											}}
+										>
+											Remove
+										</button>
+									</li>
+								);
+							})}
+						</ul>
+						<button
+							className='img-btn'
+							type='button'
+							onClick={() => {
+								append('https://');
+							}}
+						>
+							Insert more image
+						</button>
 					</div>
 					<div className='right'>
 						{/* Type */}
