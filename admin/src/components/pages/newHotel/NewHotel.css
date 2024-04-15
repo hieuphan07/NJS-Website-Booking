@@ -46,6 +46,18 @@
 				color: red;
 				font-style: italic;
 			}
+
+			#photos {
+				list-style-type: none;
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+
+				li {
+					display: flex;
+					gap: 10px;
+				}
+			}
 		}
 	}
 
@@ -68,6 +80,17 @@
 			background-color: #496449;
 			color: #fff;
 			border: none;
+		}
+
+		#room {
+			list-style-type: none;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+
+			input {
+				padding: 5px;
+			}
 		}
 	}
 }
