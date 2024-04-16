@@ -256,8 +256,8 @@ const NewHotel = () => {
 								</li>
 							);
 						})}
-						{/* Available rooms which are not belong to any hotel */}
-						<p style={{ marginTop: '10px' }}>Available rooms</p>
+						{/* Unassigned rooms which are not belong to any hotel */}
+						<p style={{ marginTop: '10px' }}>Unassigned rooms</p>
 						{rooms.map((room, index) => (
 							<li key={room?._id}>
 								<input defaultValue={room?.title} />
