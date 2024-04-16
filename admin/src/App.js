@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root, { loader as propertyLoader } from './components/pages/root/Root';
+import Login from './components/pages/login/Login.jsx';
 import Home from './components/pages/home/Home';
 import Users, { loader as usersLoader } from './components/pages/user/Users';
 import Hotels from './components/pages/hotel/Hotels';
@@ -12,9 +13,9 @@ import {
 } from './components/style/datatablesource.js';
 import Transaction from './components/pages/transaction/Transaction.jsx';
 import NewHotel from './components/pages/newHotel/NewHotel.jsx';
-import HotelDetail from './components/pages/hotelDetail/HotelDetail.jsx';
 import NewRoom from './components/pages/newRoom/NewRoom.jsx';
-import Login from './components/pages/login/Login.jsx';
+import HotelDetail from './components/pages/hotelDetail/HotelDetail.jsx';
+import RoomDetail from './components/pages/roomDetail/RoomDetail.jsx';
 import { action as loginAction } from './components/loginContent/LoginContent.jsx';
 import ProtectedRoute from './components/util/ProtectedRoute.jsx';
 
@@ -52,13 +53,20 @@ const router = createBrowserRouter([
 				path: 'hotels',
 				children: [
 					{
-						path: '',
 						children: [
 							{
 								index: true,
 								element: (
 									<ProtectedRoute>
 										<Hotels columns={hotelColumns} />
+									</ProtectedRoute>
+								),
+							},
+							{
+								path: 'new',
+								element: (
+									<ProtectedRoute>
+										<NewHotel />
 									</ProtectedRoute>
 								),
 							},
@@ -72,34 +80,38 @@ const router = createBrowserRouter([
 							},
 						],
 					},
-					{
-						path: 'new',
-						element: (
-							<ProtectedRoute>
-								<NewHotel />
-							</ProtectedRoute>
-						),
-					},
 				],
 			},
 			{
 				path: 'rooms',
 				children: [
 					{
-						index: true,
-						element: (
-							<ProtectedRoute>
-								<Rooms columns={roomColumns} />
-							</ProtectedRoute>
-						),
-					},
-					{
-						path: 'new',
-						element: (
-							<ProtectedRoute>
-								<NewRoom />
-							</ProtectedRoute>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<ProtectedRoute>
+										<Rooms columns={roomColumns} />
+									</ProtectedRoute>
+								),
+							},
+							{
+								path: 'new',
+								element: (
+									<ProtectedRoute>
+										<NewRoom />
+									</ProtectedRoute>
+								),
+							},
+							{
+								path: ':roomId',
+								element: (
+									<ProtectedRoute>
+										<RoomDetail />
+									</ProtectedRoute>
+								),
+							},
+						],
 					},
 				],
 			},

@@ -83,3 +83,32 @@ exports.deleteRoom = async (req, res, next) => {
 		next(err);
 	}
 };
+
+// update room
+exports.updateRoom = async (req, res, next) => {
+	const { hotelId, ...otherRoomDetail } = req.body;
+
+	try {
+		const updatedRoom = await Room.findByIdAndUpdate(
+			req.params.id,
+			{ $set: otherRoomDetail },
+			{ new: true }
+		);
+
+		// Check inputed hotel
+		if (!hotelId || hotelId === 'Select hotel') {
+			res.status(200).send('Room has been updated');
+		} else {
+			try {
+				await Hotel.findByIdAndUpdate(hotelId, {
+					$push: { rooms: updatedRoom },
+				});
+				res.status(200).send('Room has been updated and added to hotel');
+			} catch (err) {
+				next(err);
+			}
+		}
+	} catch (err) {
+		next(err);
+	}
+};

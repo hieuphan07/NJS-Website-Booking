@@ -46,6 +46,32 @@
 					color: red;
 					font-style: italic;
 				}
+
+				#roomNumbers {
+					list-style-type: none;
+
+					li {
+						display: flex;
+						gap: 5px;
+
+						.rm-btn {
+							background-color: rgb(208, 126, 126);
+							color: white;
+							border: none;
+							padding: 3px;
+							font-size: 12px;
+							font-weight: normal;
+						}
+					}
+				}
+
+				.rn-btn {
+					width: 100%;
+					font-weight: normal;
+					padding: 5px;
+					background-color: #cfcfcf;
+					color: #000;
+				}
 			}
 
 			button {

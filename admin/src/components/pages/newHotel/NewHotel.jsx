@@ -111,7 +111,7 @@ const NewHotel = () => {
 	return (
 		<div className='hotelForm'>
 			<div className='title'>
-				<h1>Add New Product</h1>
+				<h1>{hotelId ? 'Edit Hotel' : 'Add New Product'}</h1>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className='top'>

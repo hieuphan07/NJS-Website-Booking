@@ -1,56 +1,101 @@
 import React from 'react';
-import { useRouteLoaderData, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useRouteLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 import './NewRoom.css';
 
 const NewRoom = () => {
+	const { roomId } = useParams();
+
 	const { hotelsData } = useRouteLoaderData('root');
 	const navigate = useNavigate();
 
+	const roomIsAssignedToHotel = hotelsData.find((hotel) => {
+		const existedRoomIndex = hotel.rooms.findIndex(
+			(room) => room._id.toString() === roomId?.toString()
+		);
+		if (existedRoomIndex >= 0) {
+			return hotel;
+		} else {
+			return null;
+		}
+	});
+
 	const {
+		control,
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
-		defaultValues: {
-			title: '1 King Bed',
-			price: '80',
-			desc: 'Just steps from the beach',
-			maxPeople: '2',
-			roomNumbers: [],
-		},
+		defaultValues: !roomId
+			? {
+					title: '1 King Bed',
+					price: '80',
+					desc: 'Just steps from the beach',
+					maxPeople: '2',
+					roomNumbers: [],
+			  }
+			: async () => {
+					const response = await fetch(`http://localhost:5500/rooms/${roomId}`);
+					return await response.json();
+			  },
+	});
+
+	const {
+		fields: roomNumberFields,
+		append,
+		remove,
+	} = useFieldArray({
+		control,
+		name: 'roomNumbers',
 	});
 
 	const onSubmit = async (data) => {
-		const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
-			return {
-				number: parseInt(roomNumber.trim()),
-				unavailableDates: [],
-			};
-		});
-		const parsedRoom = { ...data, roomNumbers: roomNumbersArr };
+		if (!roomId) {
+			const roomNumbersArr = data.roomNumbers.split(',').map((roomNumber) => {
+				return {
+					number: parseInt(roomNumber.trim()),
+					unavailableDates: [],
+				};
+			});
+			const parsedRoom = { ...data, roomNumbers: roomNumbersArr };
 
-		const response = await fetch('http://localhost:5500/rooms', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('token'),
-			},
-			body: JSON.stringify(parsedRoom),
-		});
-		if (!response.ok)
-			return alert('Something went wrong! Failed to create new room.');
+			const response = await fetch('http://localhost:5500/rooms', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				},
+				body: JSON.stringify(parsedRoom),
+			});
+			if (!response.ok)
+				return alert('Something went wrong! Failed to create new room.');
 
-		alert('Successfully created new room!');
+			alert('Successfully created new room!');
 
-		return navigate('/rooms');
+			return navigate('/rooms');
+		} else {
+			const response = await fetch(`http://localhost:5500/rooms/${roomId}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				},
+				body: JSON.stringify(data),
+			});
+			if (!response.ok) {
+				return alert('Something went wrong! Failed to update the room');
+			}
+
+			alert('Successfully updated the room!');
+			return navigate('/rooms');
+		}
 	};
 
 	return (
 		<div className='newRoom'>
 			<div className='top'>
-				<h1>Add New Room</h1>
+				<h1>{roomId ? 'Edit Room' : 'Add New Room'}</h1>
 			</div>
 			<div className='center'>
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -105,27 +150,74 @@ const NewRoom = () => {
 					{/* Room numbers */}
 					<div className='inputContainer'>
 						<label htmlFor='roomNumbers'>Room numbers</label>
-						<textarea
-							id='roomNumbers'
-							placeholder='give comma between room numbers.'
-							{...register('roomNumbers', {
-								required: 'Please enter room numbers',
-							})}
-						></textarea>
-						<p className='errors-msg'>{errors.roomNumbers?.message}</p>
+						{/* Textarea for typing the new room number while creating a new room */}
+						{!roomId && (
+							<textarea
+								id='roomNumbers'
+								placeholder='give comma between room numbers.'
+								{...register('roomNumbers', {
+									required: 'Please enter room numbers',
+								})}
+							></textarea>
+						)}
+						{!roomId && (
+							<p className='errors-msg'>{errors.roomNumbers?.message}</p>
+						)}
+						{/* Room numbers list to view while editting room */}
+						{roomId && (
+							<ul id='roomNumbers'>
+								{roomNumberFields.map((field, index) => {
+									return (
+										<li key={field.id}>
+											<input {...register(`roomNumbers.${index}.number`)} />
+											<button
+												className='rm-btn'
+												type='button'
+												onClick={() => {
+													const isConfirmed = window.confirm(
+														'Are you sure to delete this item?'
+													);
+													if (isConfirmed) {
+														remove(index);
+													}
+												}}
+											>
+												Remove
+											</button>
+										</li>
+									);
+								})}
+							</ul>
+						)}
+						{roomId && (
+							<button
+								className='rn-btn'
+								type='button'
+								onClick={() => {
+									append({
+										number: 'Insert a new room number',
+										unavailableDates: [],
+									});
+								}}
+							>
+								Insert more room number
+							</button>
+						)}
 					</div>
 					{/* Hotel */}
-					<div className='inputContainer'>
-						<label htmlFor='hotel'>Choose a hotel</label>
-						<select id='hotel' {...register('hotelId')}>
-							<option value='Select hotel'>Select hotel</option>
-							{hotelsData.map((hotel) => (
-								<option key={hotel._id} value={hotel._id}>
-									{hotel.name}
-								</option>
-							))}
-						</select>
-					</div>
+					{!roomIsAssignedToHotel && (
+						<div className='inputContainer'>
+							<label htmlFor='hotel'>Choose a hotel</label>
+							<select id='hotel' {...register('hotelId')}>
+								<option value='Select hotel'>Select hotel</option>
+								{hotelsData.map((hotel) => (
+									<option key={hotel._id} value={hotel._id}>
+										{hotel.name}
+									</option>
+								))}
+							</select>
+						</div>
+					)}
 					{/* Action button */}
 					<button type='submit'>Send</button>
 				</form>
