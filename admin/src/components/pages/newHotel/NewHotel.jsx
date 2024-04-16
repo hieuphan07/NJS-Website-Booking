@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate, useRouteLoaderData, useParams } from 'react-router-dom';
 
@@ -28,6 +28,8 @@ const NewHotel = () => {
 			return true;
 		}
 	});
+
+	const [rooms, setRooms] = useState(filteredRooms);
 
 	const { hotelId } = useParams();
 
@@ -65,17 +67,26 @@ const NewHotel = () => {
 		append,
 		remove,
 	} = useFieldArray({ control, name: 'photos' });
-	const { fields: roomFields } = useFieldArray({ control, name: 'rooms' });
+	const {
+		fields: roomFields,
+		append: roomAppend,
+		remove: roomRemove,
+	} = useFieldArray({
+		control,
+		name: 'rooms',
+	});
 
 	// Submit handler
 	const onSubmit = async (data) => {
+		const parsedData = { ...data, rooms: data.rooms.map((room) => room?._id) };
+
 		const response = await fetch('http://localhost:5500/hotels', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			},
-			body: JSON.stringify(data),
+			body: JSON.stringify(parsedData),
 		});
 		if (!response.ok) {
 			return alert('Something went wrong! Failed to create new hotel.');
@@ -220,26 +231,49 @@ const NewHotel = () => {
 				<div className='center'>
 					{/* Rooms */}
 					<label htmlFor='rooms'>Rooms</label>
-					{/* For New Hotel: select hotel from available room list */}
-					{!hotelId && (
-						<select id='rooms' multiple {...register('rooms')}>
-							{filteredRooms?.map((room) => (
-								<option key={room._id} value={room._id}>
-									{room.title}
-								</option>
-							))}
-						</select>
-					)}
-					{/* For Existed Room: edit */}
-					<ul id='room'>
-						{hotelId &&
-							roomFields.map((field, index) => {
-								return (
-									<li key={field.id}>
-										<input {...register(`rooms.${index}.title`)} />
-									</li>
-								);
-							})}
+					{/* Room list: if hotel contain at least a room of after adding from available room list */}
+					<ul id='rooms'>
+						{roomFields.map((field, index) => {
+							return (
+								<li key={field.id}>
+									<input {...register(`rooms.${index}.title`)} />
+									<button
+										className='rm-btn'
+										type='button'
+										onClick={() => {
+											const isConfirmed = window.confirm(
+												'Are you sure to delete this item'
+											);
+											if (isConfirmed) {
+												roomRemove(index);
+												rooms.push(field);
+												setRooms(rooms);
+											}
+										}}
+									>
+										Remove
+									</button>
+								</li>
+							);
+						})}
+						{/* Available rooms which are not belong to any hotel */}
+						<p style={{ marginTop: '10px' }}>Available rooms</p>
+						{rooms.map((room, index) => (
+							<li key={room?._id}>
+								<input defaultValue={room?.title} />
+								<button
+									className='apd-btn'
+									type='button'
+									onClick={() => {
+										roomAppend(room);
+										rooms.splice(index, 1);
+										setRooms(rooms);
+									}}
+								>
+									Add
+								</button>
+							</li>
+						))}
 					</ul>
 				</div>
 				<div className='bottom'>

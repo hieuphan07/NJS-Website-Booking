@@ -90,14 +90,38 @@
 			border: none;
 		}
 
-		#room {
+		#rooms {
 			list-style-type: none;
 			display: flex;
 			flex-direction: column;
 			gap: 5px;
 
-			input {
-				padding: 5px;
+			li {
+				display: flex;
+				gap: 5px;
+
+				input {
+					padding: 5px;
+					width: 100%;
+				}
+
+				.rm-btn {
+					background-color: rgb(208, 126, 126);
+					color: white;
+					border: none;
+					padding: 3px;
+					font-size: 12px;
+					width: 100px;
+				}
+			}
+
+			.apd-btn {
+				background-color: rgb(104, 164, 97);
+				color: white;
+				border: none;
+				padding: 3px;
+				font-size: 12px;
+				width: 100px;
 			}
 		}
 	}
