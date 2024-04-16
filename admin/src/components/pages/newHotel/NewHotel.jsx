@@ -78,21 +78,33 @@ const NewHotel = () => {
 
 	// Submit handler
 	const onSubmit = async (data) => {
-		const parsedData = { ...data, rooms: data.rooms.map((room) => room?._id) };
+		const parsedData = {
+			...data,
+			rooms: data.rooms.map((room) => room?._id),
+		};
 
-		const response = await fetch('http://localhost:5500/hotels', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('token'),
-			},
-			body: JSON.stringify(parsedData),
-		});
+		const response = await fetch(
+			`http://localhost:5500/hotels/${hotelId ? hotelId : ''}`,
+			{
+				method: hotelId ? 'PUT' : 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				},
+				body: JSON.stringify(parsedData),
+			}
+		);
 		if (!response.ok) {
-			return alert('Something went wrong! Failed to create new hotel.');
+			return alert(
+				`'Something went wrong!' ${
+					hotelId ? '(Failed to update hotel.)' : 'Failed to create new hotel.'
+				} `
+			);
 		}
 
-		alert('Successfully created new hotel!');
+		alert(
+			hotelId ? 'Successfully updated hotel' : 'Successfully created new hotel!'
+		);
 		return navigate('/hotels');
 	};
 
@@ -177,7 +189,7 @@ const NewHotel = () => {
 								append('https://');
 							}}
 						>
-							Insert more image
+							Insert more image address
 						</button>
 					</div>
 					<div className='right'>
