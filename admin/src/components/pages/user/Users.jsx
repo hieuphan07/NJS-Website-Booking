@@ -31,7 +31,14 @@ const Users = ({ columns }) => {
 export default Users;
 
 export async function loader() {
-	const response = await fetch('http://localhost:5500/users');
-	if (!response.ok) console.log('Something went wrong!');
+	const response = await fetch('http://localhost:5500/users', {
+		headers: {
+			Authorization: 'Bearer ' + localStorage.getItem('token'),
+		},
+	});
+	if (!response.ok) {
+		console.log('Something went wrong!');
+		return [];
+	}
 	return response;
 }
