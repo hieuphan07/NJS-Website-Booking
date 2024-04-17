@@ -30,7 +30,9 @@ const Type = () => {
 							</p>
 						</div>
 					))}
-				{error && <h1>{error}</h1>}
+				{error && (
+					<h1>{error.message + ' Failed to fetch amount of property type'}</h1>
+				)}
 			</div>
 		</div>
 	);

@@ -17,7 +17,7 @@ const HotelList = () => {
 			<h2 className='hotel-list__title'>Homes guest love</h2>
 			<div className='hotel-list__container'>
 				{/* Render hotel list from given data */}
-				{highRatedHotels.map((hotel, index) => (
+				{highRatedHotels?.map((hotel, index) => (
 					<div className='hotel-list__item' key={index}>
 						<img
 							src={hotel.photos[0]}

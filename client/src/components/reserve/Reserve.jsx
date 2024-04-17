@@ -191,7 +191,7 @@ const Reserve = React.forwardRef(({ rooms, hotelId }, ref) => {
 				},
 				body: JSON.stringify(transaction),
 			});
-			navigate('/transaction');
+			navigate(`/transactions/${loginedUser}`);
 		} else {
 			alert('Check validation of input fields');
 		}

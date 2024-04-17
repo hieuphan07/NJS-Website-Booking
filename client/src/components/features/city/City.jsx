@@ -36,7 +36,9 @@ const City = () => {
 							</div>
 						</div>
 					))}
-				{error && <h1>{error}</h1>}
+				{error && (
+					<h1>{error.message + ' Failed to fetch amount of properties'}</h1>
+				)}
 			</div>
 		</div>
 	);

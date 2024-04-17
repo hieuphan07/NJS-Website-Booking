@@ -32,7 +32,6 @@ const NavBar = () => {
 		setLoginEmail(user);
 
 		const duration = expiration * 1000 - new Date().getTime();
-		console.log(duration);
 
 		setTimeout(() => {
 			logoutHandler();
