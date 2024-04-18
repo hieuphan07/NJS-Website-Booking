@@ -24,6 +24,10 @@ const DataTable = ({ columns, list }) => {
 					},
 				});
 
+				// Alert unauthentication
+				if (response.status === 401)
+					alert(`${response.statusText} (You are not admin)`);
+
 				// Response if try to delete booked hotel
 				if (path === 'hotels') {
 					if (response.status === 500) {
@@ -41,7 +45,7 @@ const DataTable = ({ columns, list }) => {
 				navigate(`/${path}`);
 			}
 		} catch (err) {
-			console.log(err);
+			throw new Error(err);
 		}
 	};
 

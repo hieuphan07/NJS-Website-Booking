@@ -96,7 +96,7 @@ const NewHotel = () => {
 		);
 		if (!response.ok) {
 			return alert(
-				`'Something went wrong!' ${
+				`Something went wrong! ${
 					hotelId ? '(Failed to update hotel.)' : 'Failed to create new hotel.'
 				} `
 			);

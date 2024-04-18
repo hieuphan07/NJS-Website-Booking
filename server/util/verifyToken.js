@@ -17,6 +17,8 @@ exports.verifyAdmin = async (req, res, next) => {
 		req.user = user;
 		if (req.user.isAdmin) {
 			next();
+		} else {
+			return next(createError(401, 'You are not authenticated!'));
 		}
 	});
 };
